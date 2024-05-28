@@ -1,0 +1,34 @@
+﻿@model QuanLyKho.ViewModels.NhaCungCapViewModel.NhaCungCapViewModel
+@{
+    ViewData["Title"] = "Cập nhật nhà cung cấp";
+}
+
+<form asp-controller="NhaCungCap" asp-action="Edit" enctype="multipart/form-data">
+    <fieldset class="col-md-8 offset-2">
+        <legend>Cập nhật nhà cung cấp</legend>
+        <input type="hidden" asp-for="MaNhaCungCap" />
+        <div bis_skin_checked="1">
+            <label asp-for="TenNhaCungCap" class="form-label mt-4">Tên nhà cung cấp</label>
+            <input asp-for="TenNhaCungCap" class="form-control" id="exampleInputPassword1" placeholder="Tên nhà cung cấp" autocomplete="off">
+            <span asp-validation-for="TenNhaCungCap" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="DiaChi" class="form-label mt-4">Địa chỉ</label>
+            <input asp-for="DiaChi" class="form-control" id="exampleInputPassword1" placeholder="Địa chỉ" autocomplete="off">
+            <span asp-validation-for="DiaChi" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="SoDienThoai" class="form-label mt-4">Số điện thoại</label>
+            <input asp-for="SoDienThoai" class="form-control" id="exampleInputPassword1" placeholder="Số điện thoại" autocomplete="off">
+            <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="Email" class="form-label mt-4">Email</label>
+            <input asp-for="Email" class="form-control" id="exampleInputPassword1" placeholder="Email" autocomplete="off">
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+            <a asp-action="Index" class="btn btn-secondary">Trở về</a> <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+    </fieldset>
+</form>

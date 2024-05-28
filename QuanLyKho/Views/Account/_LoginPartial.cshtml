@@ -1,0 +1,79 @@
+﻿@using System.Security.Claims
+@if (User.Identity.IsAuthenticated)
+{
+    var maNguoiDung = User.FindFirstValue("Id");
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+    </li>
+    @if (User.IsInRole("Quản lý"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="NhanVien" asp-action="Index">Nhân viên</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Thiết bị</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="NhaCungCap" asp-action="Index">Nhà cung cấp</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Phiếu</a>
+            <div class="dropdown-menu" bis_skin_checked="1">
+                <a asp-controller="" asp-action="" asp-route-id="@maNguoiDung" class="dropdown-item">Phiếu nhập</a>
+                <a asp-controller="" asp-action="" asp-route-id="@maNguoiDung" class="dropdown-item">Phiếu xuất</a>
+            </div>
+        </li>
+    }
+    @if (User.IsInRole("Nhân viên nhập"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Thiết bị</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Nhà cung cấp</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Phiếu</a>
+            <div class="dropdown-menu" bis_skin_checked="1">
+                <a asp-controller="" asp-action="" asp-route-id="@maNguoiDung" class="dropdown-item">Phiếu nhập</a>
+            </div>
+        </li>
+    }
+    @if (User.IsInRole("Nhân viên xuất"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Logout">Thiết bị</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Nhà cung cấp</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Phiếu</a>
+            <div class="dropdown-menu" bis_skin_checked="1">
+                <a asp-controller="" asp-action="" asp-route-id="@maNguoiDung" class="dropdown-item">Phiếu xuất</a>
+            </div>
+        </li>
+    }
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Trợ giúp</a>
+    </li>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <img class="img-circle" src="~/images/avatar_placeholder.png" style="width: 30px;" />
+            @User.Identity.Name
+        </a>
+        <div class="dropdown-menu" bis_skin_checked="1">
+            <a asp-controller="" asp-action="" asp-route-id="@maNguoiDung" class="dropdown-item">Thông tin cá nhân</a>
+            <a asp-controller="Giaoviens" asp-action="Edit" asp-route-id="@maNguoiDung" class="dropdown-item">Cập nhật thông tin cá nhân</a>
+            <a asp-controller="Giaoviens" asp-action="ChangePassword" asp-route-id="@maNguoiDung" class="dropdown-item">Đổi mật khẩu</a>
+            <div class="dropdown-divider" bis_skin_checked="1"></div>
+            <a asp-area="" asp-controller="Home" asp-action="Logout" class="dropdown-item">Đăng xuất</a>
+        </div>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+    </li>
+}

@@ -1,0 +1,45 @@
+﻿@model QuanLyKho.ViewModels.NhanVienViewModels.NhanVienCreateViewModel
+@{
+    ViewData["Title"] = "Tạo mới nhân viên";
+}
+
+<form asp-controller="NhanVien" asp-action="Create" enctype="multipart/form-data">
+    <fieldset class="col-md-8 offset-2">
+        <legend>Thêm nhân viên</legend>
+        <div bis_skin_checked="1">
+            <label asp-for="HoVaTen" class="form-label mt-4">Họ và tên</label>
+            <input asp-for="HoVaTen" class="form-control" id="exampleInputPassword1" placeholder="Họ và tên" autocomplete="off">
+            <span asp-validation-for="HoVaTen" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="SoDienThoai" class="form-label mt-4">Số điện thoại</label>
+            <input asp-for="SoDienThoai" class="form-control" id="exampleInputPassword1" placeholder="Số điện thoại" autocomplete="off">
+            <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="MaVaiTro" class="form-label mt-4">Vai trò</label>
+            <select class="form-select" asp-for="MaVaiTro" asp-items="ViewBag.VaiTroList" id="exampleSelect1">
+                <option value="">Chọn vai trò</option>
+            </select>
+            <span asp-validation-for="MaVaiTro" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="Email" class="form-label mt-4">Email</label>
+            <input asp-for="Email" class="form-control" id="exampleInputPassword1" placeholder="Email" autocomplete="off">
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="TenDangNhap" class="form-label mt-4">Tên đăng nhập</label>
+            <input asp-for="TenDangNhap" class="form-control" id="exampleInputPassword1" placeholder="Tên đăng nhập" autocomplete="off">
+            <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="MatKhau" class="form-label mt-4">Mật khẩu</label>
+            <input asp-for="MatKhau" type="password" class="form-control" id="exampleInputPassword1" placeholder="Mật khẩu" autocomplete="off">
+            <span asp-validation-for="MatKhau" class="text-danger"></span>
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+            <a asp-action="Index" class="btn btn-secondary">Trở về</a> <button type="submit" class="btn btn-primary">Thêm nhân viên viên</button>
+        </div>
+    </fieldset>
+</form>
