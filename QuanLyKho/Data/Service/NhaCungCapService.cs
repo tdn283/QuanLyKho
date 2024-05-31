@@ -46,7 +46,7 @@ namespace QuanLyKho.Data.Service
         public async Task<NhaCungCap> UpdateNhaCungCapAsync(string id, NhaCungCap newNhaCungCap)
         {
             _context.NhaCungCaps.Update(newNhaCungCap);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return newNhaCungCap;
         }
     }

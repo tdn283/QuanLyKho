@@ -12,6 +12,9 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<INhanVienService, NhanVienService>();
 builder.Services.AddScoped<INhaCungCapService, NhaCungCapService>();
+builder.Services.AddScoped<IThietBiService, ThietBiService>();
+builder.Services.AddScoped<IDanhMucService, DanhMucService>();
+builder.Services.AddScoped<IPhieuNhapService, PhieuNhapService>();
 
 
 builder.Services.AddDbContext<QuanlykhoContext>(options =>

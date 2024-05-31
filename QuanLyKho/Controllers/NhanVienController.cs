@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using QuanLyKho.Data.Helper;
 using QuanLyKho.Data.Interface;
+using QuanLyKho.Helper;
 using QuanLyKho.Models;
 using QuanLyKho.ViewModels.NhanVienViewModels;
 using System.Globalization;

@@ -1,5 +1,5 @@
-﻿@using QuanLyKho.ViewModels.NhanVienViewModels
-@model IEnumerable<NhanVienViewModel>
+﻿@using QuanLyKho.ViewModels.ThietBiViewModels
+@model IEnumerable<ThietBiViewModel>
 @{
     ViewData["Title"] = "Index";
 }
@@ -7,25 +7,25 @@
 
 <div>
     <div class="row">
-        <h2>Danh sách nhân viên</h2>
+        <h2>Danh sách thiết bị</h2>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <form asp-action="Index" class="flex-grow-1 me-3">
                 <div class="row">
                     <div class="col-md-4">
-                        <input name="searchString" class="form-control" placeholder="Tên nhân viên" value="@ViewData["searchString"]" />
+                        <input name="searchString" class="form-control" placeholder="Tên thiết bị" value="@ViewData["searchString"]" />
                     </div>
-                    <div class="col-md-2">
+                    @* <div class="col-md-2">
                         <select name="vaiTroFilter" class="form-select" asp-items="@ViewBag.VaiTroList" id="exampleSelect1">
                             <option value="">Tất cả vai trò</option>
                         </select>
-                    </div>
+                    </div> *@
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                         <a asp-action="Index" class="btn btn-secondary">Reset</a>
                     </div>
                 </div>
             </form>
-            <a asp-action="Create" class="btn btn-success">Thêm nhân viên</a>
+            <a asp-action="Create" class="btn btn-success">Thêm thiết bị</a>
         </div>
         <div class="col-12">
             <table class="table">
@@ -35,16 +35,22 @@
                             ID
                         </th>
                         <th>
-                            Tên nhân viên
+                            Tên thiết bị
                         </th>
                         <th>
-                            Số điện thoại
+                            Nhà cung cấp
                         </th>
                         <th>
-                            Email
+                            Thời gian bảo hành
                         </th>
                         <th>
-                            Vai trò
+                            Đơn giá
+                        </th>
+                        <th>
+                            Trạng thái
+                        </th>
+                        <th>
+                            Số lượng còn
                         </th>
                         <th>
                             Actions
@@ -56,24 +62,30 @@
                     {
                         <tr>
                             <td class="align-middle">
-                                @Html.DisplayFor(modelItem => item.MaNguoiDung)
+                                @Html.DisplayFor(modelItem => item.MaThietBi)
                             </td>
                             <td class="align-middle">
-                                @Html.DisplayFor(modelItem => item.HoVaTen)
+                                @Html.DisplayFor(modelItem => item.TenThietBi)
                             </td>
                             <td class="align-middle">
-                                @Html.DisplayFor(modelItem => item.SoDienThoai)
+                                @Html.DisplayFor(modelItem => item.TenNhaCungCap)
                             </td>
                             <td class="align-middle">
-                                @Html.DisplayFor(modelItem => item.Email)
+                                @Html.DisplayFor(modelItem => item.ThoiGianBaoHanh) tháng
                             </td>
                             <td class="align-middle">
-                                @Html.DisplayFor(modelItem => item.TenVaiTro)
+                                @Html.DisplayFor(modelItem => item.GiaBanFormat) VNĐ
                             </td>
                             <td class="align-middle">
-                                <a type="button" class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.MaNguoiDung">Edit</a>
-                                <a type="button" class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.MaNguoiDung">Details</a>
-                                <a type="button" class="btn btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này không?');" asp-action="Delete" asp-route-id="@item.MaNguoiDung">Delete</a>
+                                @Html.DisplayFor(modelItem => item.TrangThai)
+                            </td>
+                            <td class="align-middle">
+                                @Html.DisplayFor(modelItem => item.SoLuongCon)
+                            </td>
+                            <td class="align-middle">
+                                <a type="button" class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.MaThietBi">Edit</a>
+                                <a type="button" class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.MaThietBi">Details</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa thiết bị này không?');" asp-action="Delete" asp-route-id="@item.MaThietBi">Delete</a>
                             </td>
                         </tr>
                     }

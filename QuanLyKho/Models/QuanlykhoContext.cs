@@ -38,8 +38,9 @@ public partial class QuanlykhoContext : DbContext
         modelBuilder.Entity<ChiTietPhieuNhap>(entity =>
         {
             entity
-                .HasNoKey()
                 .ToTable("ChiTietPhieuNhap");
+
+            entity.HasNoKey();
 
             entity.Property(e => e.DonGia)
                 .HasColumnType("money")
@@ -54,17 +55,6 @@ public partial class QuanlykhoContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("maThietBi");
-            entity.Property(e => e.ThanhTien).HasColumnName("thanhTien");
-
-            entity.HasOne(d => d.MaPhieuNhapNavigation).WithMany()
-                .HasForeignKey(d => d.MaPhieuNhap)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__ChiTietPh__maPhi__37A5467C");
-
-            entity.HasOne(d => d.MaThietBiNavigation).WithMany()
-                .HasForeignKey(d => d.MaThietBi)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__ChiTietPh__maThi__38996AB5");
         });
 
         modelBuilder.Entity<ChiTietPhieuXuat>(entity =>
@@ -73,7 +63,9 @@ public partial class QuanlykhoContext : DbContext
                 .HasNoKey()
                 .ToTable("ChiTietPhieuXuat");
 
-            entity.Property(e => e.DonGia).HasColumnName("donGia");
+            entity.Property(e => e.DonGia)
+                .HasColumnType("money")
+                .HasColumnName("donGia");
             entity.Property(e => e.MaPhieuXuat)
                 .HasMaxLength(5)
                 .IsUnicode(false)
@@ -85,7 +77,6 @@ public partial class QuanlykhoContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("maThietBi");
             entity.Property(e => e.SoLuong).HasColumnName("soLuong");
-            entity.Property(e => e.ThanhTien).HasColumnName("thanhTien");
 
             entity.HasOne(d => d.MaPhieuXuatNavigation).WithMany()
                 .HasForeignKey(d => d.MaPhieuXuat)
@@ -167,9 +158,12 @@ public partial class QuanlykhoContext : DbContext
             entity.Property(e => e.NgayNhap)
                 .HasColumnType("date")
                 .HasColumnName("ngayNhap");
+            entity.Property(e => e.TongTien)
+                .HasColumnType("money")
+                .HasColumnName("tongTien");
             entity.Property(e => e.TrangThai)
                 .HasMaxLength(20)
-                .IsUnicode(false)
+                .IsUnicode(true)
                 .HasColumnName("trangThai");
 
             entity.HasOne(d => d.MaNguoiDungNavigation).WithMany(p => p.PhieuNhapHangs)
@@ -203,9 +197,12 @@ public partial class QuanlykhoContext : DbContext
             entity.Property(e => e.NhanVienXuat)
                 .HasMaxLength(100)
                 .HasColumnName("nhanVienXuat");
+            entity.Property(e => e.TongTien)
+                .HasColumnType("money")
+                .HasColumnName("tongTien");
             entity.Property(e => e.TrangThai)
                 .HasMaxLength(20)
-                .IsUnicode(false)
+                .IsUnicode(true)
                 .HasColumnName("trangThai");
 
             entity.HasOne(d => d.MaNguoiDungNavigation).WithMany(p => p.PhieuXuatHangs)
@@ -306,6 +303,9 @@ public partial class QuanlykhoContext : DbContext
             entity.Property(e => e.TrangThai)
                 .HasMaxLength(20)
                 .HasColumnName("trangThai");
+            entity.Property(e => e.GiaBan)
+                .HasColumnType("money")
+                .HasColumnName("giaBan");
 
             entity.HasOne(d => d.MaDanhMucNavigation).WithMany(p => p.ThongTinThietBis)
                 .HasForeignKey(d => d.MaDanhMuc)

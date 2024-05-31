@@ -1,0 +1,57 @@
+﻿@model QuanLyKho.ViewModels.ThietBiViewModels.ThietBiCreateViewModel
+@{
+    ViewData["Title"] = "Tạo mới thiết bị";
+}
+
+<form asp-controller="ThietBi" asp-action="Create" enctype="multipart/form-data">
+    <fieldset class="col-md-8 offset-2">
+        <legend>Thêm thiết bị</legend>
+        <div bis_skin_checked="1">
+            <label asp-for="TenThietBi" class="form-label mt-4">Tên thiết bị</label>
+            <input asp-for="TenThietBi" class="form-control" id="exampleInputPassword1" placeholder="Tên thiết bị" autocomplete="off">
+            <span asp-validation-for="TenThietBi" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="MaDanhMuc" class="form-label mt-4">Danh mục</label>
+            <select class="form-select" asp-for="MaDanhMuc" asp-items="ViewBag.DanhMucList" id="exampleSelect1">
+                <option value="">Chọn danh mục</option>
+            </select>
+            <span asp-validation-for="MaDanhMuc" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="MaNhaCungCap" class="form-label mt-4">Nhà cung cấp</label>
+            <select class="form-select" asp-for="MaNhaCungCap" asp-items="ViewBag.NhaCungCapList" id="exampleSelect1">
+                <option value="">Chọn nhà cung cấp</option>
+            </select>
+            <span asp-validation-for="MaNhaCungCap" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="Model" class="form-label mt-4">Model</label>
+            <input asp-for="Model" class="form-control" id="exampleInputPassword1" placeholder="Model" autocomplete="off">
+            <span asp-validation-for="Model" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="ThoiGianBaoHanh" class="form-label mt-4">Thời gian bảo hành (tháng)</label>
+            <input asp-for="ThoiGianBaoHanh" type="number" min="0" step="1" class="form-control" id="exampleInputPassword1" placeholder="12" autocomplete="off">
+            <span asp-validation-for="ThoiGianBaoHanh" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="NhaSanXuat" class="form-label mt-4">Hãng sản xuất</label>
+            <input asp-for="NhaSanXuat" class="form-control" id="exampleInputPassword1" placeholder="Hãng sản xuất" autocomplete="off">
+            <span asp-validation-for="NhaSanXuat" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="MoTa" class="form-label mt-4">Mô tả</label>
+            <input asp-for="MoTa" class="form-control" id="exampleInputPassword1" placeholder="Mô tả" autocomplete="off">
+            <span asp-validation-for="MoTa" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="GiaBan" class="form-label mt-4">Giá bán</label>
+            <input asp-for="GiaBan" class="form-control" id="exampleInputPassword1" placeholder="Giá bán" autocomplete="off">
+            <span asp-validation-for="GiaBan" class="text-danger"></span>
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+            <a asp-action="Index" class="btn btn-secondary">Trở về</a> <button type="submit" class="btn btn-primary">Thêm thiết bị</button>
+        </div>
+    </fieldset>
+</form>

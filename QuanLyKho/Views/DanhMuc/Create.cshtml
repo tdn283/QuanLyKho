@@ -1,0 +1,24 @@
+﻿@model QuanLyKho.ViewModels.DanhMucViewModels.DanhMucCreateViewModel
+@{
+    ViewData["Title"] = "Tạo mới danh mục";
+}
+
+<form asp-controller="DanhMuc" asp-action="Create" enctype="multipart/form-data">
+    <fieldset class="col-md-8 offset-2">
+
+        <legend>Thêm danh mục</legend>
+        <div bis_skin_checked="1">
+            <label asp-for="TenDanhMuc" class="form-label mt-4">Tên danh mục</label>
+            <input asp-for="TenDanhMuc" class="form-control" id="exampleInputPassword1" placeholder="Tên danh mục" autocomplete="off">
+            <span asp-validation-for="TenDanhMuc" class="text-danger"></span>
+        </div>
+        <div bis_skin_checked="1">
+            <label asp-for="MoTa" class="form-label mt-4">Mô tả</label>
+            <input asp-for="MoTa" class="form-control" id="exampleInputPassword1" placeholder="Mô tả" autocomplete="off">
+            <span asp-validation-for="MoTa" class="text-danger"></span>
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+            <a asp-action="Index" class="btn btn-secondary">Trở về</a> <button type="submit" class="btn btn-primary">Thêm danh mục</button>
+        </div>
+    </fieldset>
+</form>

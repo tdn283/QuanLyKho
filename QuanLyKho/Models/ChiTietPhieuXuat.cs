@@ -11,9 +11,7 @@ public partial class ChiTietPhieuXuat
 
     public int SoLuong { get; set; }
 
-    public double DonGia { get; set; }
-
-    public double ThanhTien { get; set; }
+    public decimal DonGia { get; set; }
 
     public virtual PhieuXuatHang? MaPhieuXuatNavigation { get; set; }
 

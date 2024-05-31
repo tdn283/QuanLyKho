@@ -1,0 +1,54 @@
+﻿@model QuanLyKho.ViewModels.PhieuNhapViewModels.PhieuNhapDetailsViewModel
+
+<div class="row">
+    <h2>Chi tiết phiếu nhập</h2>
+    <div class="col-12">
+        <p><strong>Mã phiếu nhập:</strong> @Html.DisplayFor(model => model.MaPhieuNhap)</p>
+        <p><strong>Tên nhân viên:</strong> @Html.DisplayFor(model => model.HoVaTen)</p>
+        <p><strong>Ngày nhập:</strong> @Html.DisplayFor(model => model.NgayNhap)</p>
+        <p><strong>Tổng tiền:</strong> @Model.TongTienFormat</p>
+        <p><strong>Ghi chú:</strong> @Html.DisplayFor(model => model.GhiChu)</p>
+        <p><strong>Trạng thái:</strong> @Html.DisplayFor(model => model.TrangThai)</p>
+    </div>
+
+    <div class="col-12 mt-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên thiết bị</th>
+                    <th>Nhà cung cấp</th>
+                    <th>Số lượng còn</th>
+                    <th>Giá nhập</th>
+                    <th>Số lượng nhập</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.ThongTinThietBis.Count; i++)
+                {
+                    <tr>
+                        <td class="align-middle">
+                            @Html.DisplayFor(model => model.ThongTinThietBis[i].MaThietBi)
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(model => model.ThongTinThietBis[i].TenThietBi)
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(model => model.ThongTinThietBis[i].TenNhaCungCap)
+                        </td>
+                        <td class="align-middle">
+                            @(Model.ThongTinThietBis[i].GiaBan.HasValue ? Model.ThongTinThietBis[i].GiaBan.Value * 0.9m : 0)
+                        </td>
+                        <td class="align-middle">
+                            @Html.DisplayFor(model => model.ThongTinThietBis[i].SoLuongNhap)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+        <a asp-action="Index" class="btn btn-secondary">Trở về</a>
+    </div>
+</div>

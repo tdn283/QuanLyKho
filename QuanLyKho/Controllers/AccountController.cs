@@ -30,7 +30,7 @@ namespace QuanLyKho.Controllers
         {
             var taiKhoan = await _context.TaiKhoans
                 .Include(tk => tk.MaVaiTroNavigation)
-                .FirstOrDefaultAsync(tk => tk.Email == loginVM.Email);
+                .FirstOrDefaultAsync(tk => tk.TenDangNhap == loginVM.TenDangNhap);
             //if (taiKhoan == null || !BCrypt.Net.BCrypt.Verify(loginVM.MatKhau, taiKhoan.MatKhau))
             //{
             //    ModelState.AddModelError("Email", "Email hoặc mật khẩu không đúng");
@@ -42,7 +42,6 @@ namespace QuanLyKho.Controllers
                 ModelState.AddModelError("Email", "Email hoặc mật khẩu không đúng");
                 return View();
             }
-
 
             var claims = new List<Claim>
             {

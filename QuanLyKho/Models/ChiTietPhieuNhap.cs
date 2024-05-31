@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace QuanLyKho.Models;
 
@@ -12,8 +14,6 @@ public partial class ChiTietPhieuNhap
     public int SoLuongNhap { get; set; }
 
     public decimal DonGia { get; set; }
-
-    public double ThanhTien { get; set; }
 
     public virtual PhieuNhapHang? MaPhieuNhapNavigation { get; set; }
 
