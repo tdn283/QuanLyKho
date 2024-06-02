@@ -1,5 +1,5 @@
 ﻿@using QuanLyKho.Data.Enums
-@model QuanLyKho.ViewModels.PhieuNhapViewModels.PhieuNhapDetailsViewModel
+@model QuanLyKho.ViewModels.PhieuXuatViewModels.PhieuXuatDetailsViewModel
 
 <form asp-action="Details" method="post">
     @if (TempData["SuccessMessage"] != null)
@@ -10,20 +10,21 @@
         </div>
     }
     <div class="row">
-        <h2>Chi tiết phiếu nhập</h2>
+        <h2>Chi tiết phiếu xuất</h2>
         <div class="col-12">
 
-            <input type="hidden" name="id" value="@Model.MaPhieuNhap" />
+            <input type="hidden" name="id" value="@Model.MaPhieuXuat" />
 
-            <p><strong>Mã phiếu nhập:</strong> @Html.DisplayFor(model => model.MaPhieuNhap)</p>
+            <p><strong>Mã phiếu nhập:</strong> @Html.DisplayFor(model => model.MaPhieuXuat)</p>
             <p><strong>Tên nhân viên:</strong> @Html.DisplayFor(model => model.HoVaTen)</p>
-            <p><strong>Ngày nhập:</strong> @Html.DisplayFor(model => model.NgayNhap)</p>
+            <p><strong>Nhân viên yêu cầu:</strong> @Html.DisplayFor(model => model.NguoiYeuCau)</p>
+            <p><strong>Ngày xuất:</strong> @Html.DisplayFor(model => model.NgayXuat)</p>
             <p><strong>Tổng tiền:</strong> @Model.TongTienFormat VNĐ</p>
             <p><strong>Ghi chú:</strong> @Html.DisplayFor(model => model.GhiChu)</p>
             <div class="col-md-4">
                 <label asp-for="SelectedTrangThai" class="control-label"><strong>Trạng thái</strong></label>
                 <select asp-for="SelectedTrangThai" asp-items="@Model.TrangThaiList" class="form-select" id="statusDropdown"
-                        disabled="@(Model.SelectedTrangThai == "Đã nhập kho" || Model.SelectedTrangThai == "Đã hủy")"></select>
+                        disabled="@(Model.SelectedTrangThai == "Đã duyệt" || Model.SelectedTrangThai == "Đã hủy")"></select>
             </div>
 
             <div class="col-12 mt-4">
@@ -33,8 +34,8 @@
                             <th>ID</th>
                             <th>Tên thiết bị</th>
                             <th>Nhà cung cấp</th>
-                            <th>Số lượng nhập</th>
-                            <th>Giá nhập</th>
+                            <th>Số lượng xuất</th>
+                            <th>Giá bán</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,10 +52,10 @@
                                     @Html.DisplayFor(model => model.ThongTinThietBis[i].TenNhaCungCap)
                                 </td>
                                 <td class="align-middle">
-                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].SoLuongNhap)
+                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].SoLuongXuat)
                                 </td>
                                 <td class="align-middle">
-                                    @(Model.ThongTinThietBis[i].GiaBan.HasValue ? Model.ThongTinThietBis[i].GiaBan.Value * 0.9m : 0)
+                                    @(Model.ThongTinThietBis[i].GiaBan.HasValue ? Model.ThongTinThietBis[i].GiaBan.Value : 0)
                                 </td>
                             </tr>
                             @if (i == Model.ThongTinThietBis.Count - 1)
@@ -70,13 +71,13 @@
             </div>
             <div class="d-flex justify-content-between mt-4">
                 <a asp-action="Index" class="btn btn-secondary">Trở về</a>
-                @if (Model.SelectedTrangThai != "Đã nhập kho" && Model.SelectedTrangThai != "Đã hủy")
+                @if (Model.SelectedTrangThai != "Đã duyệt" && Model.SelectedTrangThai != "Đã hủy")
                 {
-                <button type="submit" class="btn btn-primary" id="saveButton"
-                @if (Model.SelectedTrangThai == "Chờ nhập kho")
-                {
-                    <text> disabled </text>
-                }>
+                    <button type="submit" class="btn btn-primary" id="saveButton"
+                    @if (Model.SelectedTrangThai == "Chờ duyệt")
+                    {
+                        <text> disabled </text>
+                    }>
                     Lưu
                 </button>
                 }
@@ -89,7 +90,7 @@
     document.getElementById('statusDropdown').addEventListener('change', function () {
         var selectedStatus = this.value;
         var saveButton = document.getElementById('saveButton');
-        if (selectedStatus === 'Chờ nhập kho') {
+        if (selectedStatus === 'Chờ duyệt') {
             saveButton.disabled = true;
         } else {
             saveButton.disabled = false;
@@ -100,7 +101,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         var selectedStatus = document.getElementById('statusDropdown').value;
         var saveButton = document.getElementById('saveButton');
-        if (selectedStatus === 'Chờ nhập kho') {
+        if (selectedStatus === 'Chờ duyệt') {
             saveButton.disabled = true;
         } else {
             saveButton.disabled = false;

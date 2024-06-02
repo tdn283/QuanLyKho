@@ -15,6 +15,7 @@ builder.Services.AddScoped<INhaCungCapService, NhaCungCapService>();
 builder.Services.AddScoped<IThietBiService, ThietBiService>();
 builder.Services.AddScoped<IDanhMucService, DanhMucService>();
 builder.Services.AddScoped<IPhieuNhapService, PhieuNhapService>();
+builder.Services.AddScoped<IPhieuXuatService, PhieuXuatService>();
 
 
 builder.Services.AddDbContext<QuanlykhoContext>(options =>

@@ -1,0 +1,114 @@
+﻿@model QuanLyKho.ViewModels.PhieuXuatViewModels.PhieuXuatCreateViewModel
+
+
+<form asp-action="Create" asp-controller="PhieuXuat">
+    <div class="row">
+        <h2>Tạo phiếu xuất</h2>
+        <div class="col-12">
+            @Html.HiddenFor(model => model.MaNguoiDung)
+            <p><strong>Tên nhân viên:</strong> @Html.DisplayFor(model => model.HoVaTen)</p>
+            <div class="col-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên thiết bị</th>
+                            <th>Nhà cung cấp</th>
+                            <th>Số lượng còn</th>
+                            <th>Giá bán</th>
+                            <th>Số lượng xuất</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.ThongTinThietBis.Count; i++)
+                        {
+                            <tr>
+                                <td class="align-middle">
+                                    @Html.HiddenFor(model => model.ThongTinThietBis[i].MaThietBi, new { @name = $"ThongTinThietBis[{i}].MaThietBi" })
+                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].MaThietBi)
+                                </td>
+                                <td class="align-middle">
+                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].TenThietBi)
+                                </td>
+                                <td class="align-middle">
+                                    @Html.HiddenFor(model => model.ThongTinThietBis[i].MaNhaCungCap)
+                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].TenNhaCungCap)
+                                </td>
+                                <td class="align-middle">
+                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].SoLuongCon)
+                                </td>
+                                <td class="align-middle">
+                                    @Html.HiddenFor(model => model.ThongTinThietBis[i].GiaBan)
+                                    @(Model.ThongTinThietBis[i].GiaBan.HasValue ? Model.ThongTinThietBis[i].GiaBan.Value : 0)
+                                </td>
+                                <td class="align-middle input-group">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="decrementValue(@i)">-</button>
+                                    @Html.EditorFor(model => model.ThongTinThietBis[i].SoLuongXuat, new { htmlAttributes = new { @class = "form-control soLuongXuat", @style = "width: 50px; text-align: center;", @min = "0", @name = $"ThongTinThietBis[{i}].SoLuongXuat" } })
+                                    <button class="btn btn-outline-secondary" type="button" onclick="incrementValue(@i)">+</button>
+                                    @Html.ValidationMessageFor(model => model.ThongTinThietBis[i].SoLuongXuat, "", new { @class = "text-danger" })
+                                </td>
+                            </tr>
+                        }
+                        <tr>
+                            <td colspan="4" class="text-right"><strong>Tổng cộng:</strong></td>
+                            @Html.HiddenFor(model => model.TongTien, new { id = "tongTienHidden" })
+                            <td id="tongTien"><strong>@Model.TongTienFormat</strong></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div bis_skin_checked="1">
+                    <label asp-for="NguoiYeuCau" class="form-label mt-4">Nhân viên yêu cầu</label>
+                    <select class="form-select" asp-for="NguoiYeuCau" asp-items="ViewBag.NhanVienList" id="exampleSelect1">
+                        <option value="">Chọn nhân viên</option>
+                    </select>
+                    <span asp-validation-for="NguoiYeuCau" class="text-danger"></span>
+                </div>
+                <div>
+                    <label asp-for="GhiChu" class="form-label mt-4">Ghi chú</label>
+                    <textarea asp-for="GhiChu" class="form-control" id="exampleInputPassword1" rows="3" placeholder="Ghi chú" autocomplete="off"></textarea>
+                    <span asp-validation-for="GhiChu" class="text-danger"></span>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">Trở về</a>
+                    <button type="submit" class="btn btn-primary">Tạo phiếu xuất</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script>
+    const soLuongXuatInputs = document.querySelectorAll('.soLuongXuat');
+
+    calculateTotal();
+
+    soLuongXuatInputs.forEach(input => {
+        input.addEventListener('input', calculateTotal);
+    });
+
+    function calculateTotal() {
+        let total = 0;
+        soLuongXuatInputs.forEach(input => {
+            const soLuongXuat = parseInt(input.value) || 0;
+            const giaBan = parseFloat(input.closest('tr').querySelector('td:nth-child(5)').textContent) || 0;
+            total += soLuongXuat * giaBan;
+        });
+        document.getElementById('tongTien').textContent = total;
+        document.getElementById('tongTienHidden').value = total; // Update the hidden field
+    }
+
+    function incrementValue(index) {
+        const input = soLuongXuatInputs[index];
+        input.value = parseInt(input.value) + 1 || 1; // Increment or set to 1
+        calculateTotal(); // Recalculate the total
+    }
+
+    function decrementValue(index) {
+        const input = soLuongXuatInputs[index];
+        const currentValue = parseInt(input.value) || 0;
+        input.value = currentValue > 0 ? currentValue - 1 : 0; // Decrement or keep at 0
+        calculateTotal(); // Recalculate the total
+    }
+</script>

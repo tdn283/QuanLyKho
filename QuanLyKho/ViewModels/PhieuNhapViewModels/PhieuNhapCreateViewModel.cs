@@ -28,5 +28,6 @@ namespace QuanLyKho.ViewModels.PhieuNhapViewModels
         [ValidateNever]
         public string GiaBanFormat => GiaBan?.ToString("N0");
         public int SoLuongNhap { get; set; }
+        public int SoLuongXuat { get; set; }
     }
 }

@@ -73,5 +73,19 @@ namespace QuanLyKho.Helper
             int soMoi = soHienTai + 1;
             return "PN" + soMoi.ToString("D2");
         }
+
+        public static string TaoMaPhieuXuatMoi(QuanlykhoContext context)
+        {
+            var maPhieuXuatLonNhat = context.PhieuXuatHangs.OrderByDescending(tk => tk.MaPhieuXuat).FirstOrDefault()?.MaPhieuXuat;
+
+            if (maPhieuXuatLonNhat == null)
+            {
+                return "PX01";
+            }
+
+            int soHienTai = int.Parse(maPhieuXuatLonNhat.Substring(2));
+            int soMoi = soHienTai + 1;
+            return "PX" + soMoi.ToString("D2");
+        }
     }
 }

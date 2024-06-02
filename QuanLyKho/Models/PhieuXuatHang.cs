@@ -19,4 +19,5 @@ public partial class PhieuXuatHang
     public string? NhanVienXuat { get; set; }
 
     public virtual TaiKhoan? MaNguoiDungNavigation { get; set; }
+    public virtual ICollection<ChiTietPhieuXuat> ChiTietPhieuXuats { get; set; }
 }

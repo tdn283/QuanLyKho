@@ -78,6 +78,7 @@ namespace QuanLyKho.Controllers
                 MaNguoiDung = nguoiDung.MaNguoiDung,
                 HoVaTen = nguoiDung.HoVaTen,
                 TongTien = 0,
+                GhiChu = null,
                 ThongTinThietBis = thietBiList.Select(tb => new ThongTinThietBiCreateItem
                 {
                     MaThietBi = tb.MaThietBi,
@@ -86,7 +87,7 @@ namespace QuanLyKho.Controllers
                     TenThietBi = tb.TenThietBi,
                     SoLuongCon = tb.SoLuongCon,
                     GiaBan = tb.GiaBan,
-                    SoLuongNhap = 0
+                    SoLuongNhap = 0,
                 }).ToList()
             };
 
@@ -255,14 +256,14 @@ namespace QuanLyKho.Controllers
             {
                 await transaction.RollbackAsync();
 
-                return BadRequest("Concurrency error occurred. Please try again.");
+                return BadRequest("Đã xảy ra lỗi. Vui lòng thử lại sau.");
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                return StatusCode(500, "An error occurred while updating the data. Please try again.");
+                return StatusCode(500, "Có lỗi đã xảy ra trong quá trình cập nhật dữ liệu. Xin vui lòng thử lại sau.");
             }
-            TempData["SuccessMessage"] = "Phiếu nhập đã được cập nhật thành công!";
+            TempData["SuccessMessage"] = "Cập nhật trạng thái thành công!";
             return RedirectToAction("Details", new { id });
         }
 
@@ -301,15 +302,12 @@ namespace QuanLyKho.Controllers
             {
                 await transaction.RollbackAsync();
 
-                return BadRequest("Concurrency error occurred. Please try again.");
+                return BadRequest("Đã xảy ra lỗi. Vui lòng thử lại sau.");
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-
-                // Log the exception
-                // Optionally, you can rethrow the exception or return an appropriate response
-                return StatusCode(500, "An error occurred while deleting the data. Please try again.");
+                return StatusCode(500, "Đã có lỗi xảy ra trong quá trình cập nhật dữ liệu. Vui lòng thử lại sau.");
             }
 
             return RedirectToAction("Index");

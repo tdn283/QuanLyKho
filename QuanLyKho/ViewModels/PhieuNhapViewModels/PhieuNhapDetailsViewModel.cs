@@ -29,5 +29,6 @@ namespace QuanLyKho.ViewModels.PhieuNhapViewModels
         public decimal? GiaBan { get; set; }
         public string GiaBanFormat => GiaBan?.ToString("N0");
         public int SoLuongNhap { get; set; }
+        public int SoLuongXuat { get; set; }
     }
 }

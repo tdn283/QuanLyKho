@@ -1,5 +1,94 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using QuanLyKho.ViewModels.PhieuXuatViewModels
+@model IEnumerable<PhieuXuatViewModel>
 @{
+    ViewData["Title"] = "Index";
 }
+
+<div>
+    <div class="row">
+        <h2>Danh sách phiếu xuất</h2>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <form asp-action="Index" class="flex-grow-1 me-3">
+                <div class="row">
+                    <div class="col-md-4">
+                        <input name="searchString" class="form-control" placeholder="Mã phiếu xuất" value="@ViewData["searchString"]" />
+                    </div>
+                    <div class="col-md-2">
+                        <select name="trangThaiFilter" class="form-select" asp-items="@ViewBag.TrangThaiList" id="exampleSelect1">
+                            <option value="">Tất cả trạng thái</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        <a asp-action="Index" class="btn btn-secondary">Reset</a>
+                    </div>
+                </div>
+            </form>
+            <a asp-action="Create" asp-route-maNguoiDung="@User.FindFirst("Id").Value" class="btn btn-success">Tạo phiếu xuất</a>
+        </div>
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Mã phiếu xuất
+                        </th>
+                        <th>
+                            Nhân viên xuất
+                        </th>
+                        <th>
+                            Người yêu cầu
+                        </th>
+                        <th>
+                            Ngày xuất
+                        </th>
+                        <th>
+                            Tổng tiền
+                        </th>
+                        <th>
+                            Trạng thái
+                        </th>
+                        <th>
+                            Ghi chú
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="align-middle">
+                                @Html.DisplayFor(modelItem => item.MaPhieuXuat)
+                            </td>
+                            <td class="align-middle">
+                                @Html.DisplayFor(modelItem => item.HoVaTen)
+                            </td>
+                            <td class="align-middle">
+                                @Html.DisplayFor(modelItem => item.NguoiYeuCau)
+                            </td>
+                            <td class="align-middle">
+                                @Html.DisplayFor(modelItem => item.NgayXuat)
+                            </td>
+                            <td class="align-middle">
+                                @Html.DisplayFor(modelItem => item.TongTienFormat) VNĐ
+                            </td>
+                            <td class="align-middle">
+                                @Html.DisplayFor(modelItem => item.TrangThai)
+                            </td>
+                            <td class="align-middle">
+                                @Html.DisplayFor(modelItem => item.GhiChu)
+                            </td>
+                            <td class="align-middle">
+                                <a type="button" class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.MaPhieuXuat">Details</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa phiếu xuất này không?');" asp-action="Delete" asp-route-id="@item.MaPhieuXuat">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

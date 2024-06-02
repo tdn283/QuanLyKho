@@ -71,8 +71,8 @@ public partial class QuanlykhoContext : DbContext
 
         modelBuilder.Entity<ChiTietPhieuXuat>(entity =>
         {
+            entity.HasKey(e => new { e.MaPhieuXuat, e.MaThietBi });
             entity
-                .HasNoKey()
                 .ToTable("ChiTietPhieuXuat");
 
             entity.Property(e => e.DonGia)
@@ -90,15 +90,17 @@ public partial class QuanlykhoContext : DbContext
                 .HasColumnName("maThietBi");
             entity.Property(e => e.SoLuong).HasColumnName("soLuong");
 
-            entity.HasOne(d => d.MaPhieuXuatNavigation).WithMany()
+            entity.HasOne(d => d.MaPhieuXuatNavigation)
+                .WithMany(p => p.ChiTietPhieuXuats)
                 .HasForeignKey(d => d.MaPhieuXuat)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__ChiTietPh__maPhi__3D5E1FD2");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ChiTietPhieuXuat_PhieuXuatHang");
 
-            entity.HasOne(d => d.MaThietBiNavigation).WithMany()
+            entity.HasOne(d => d.MaThietBiNavigation)
+                .WithMany(p => p.ChiTietPhieuXuats)
                 .HasForeignKey(d => d.MaThietBi)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__ChiTietPh__maThi__3E52440B");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ChiTietPhieuXuat_ThongTinThietBi");
         });
 
         modelBuilder.Entity<DanhMucThietBi>(entity =>
