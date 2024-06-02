@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,39 +7,164 @@
     <title>@ViewData["Title"] - QuanLyKho</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/navbar.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/QuanLyKho.styles.css" asp-append-version="true" />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">QuanLyKho</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <partial name="~/Views/Account/_LoginPartial.cshtml" />
-                    </ul>
-                </div>
-            </div>
-        </nav>
+    @* <header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container-fluid">
+    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">QuanLyKho</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+    <ul class="navbar-nav flex-grow-1">
+    <partial name="~/Views/Account/_LoginPartial.cshtml" />
+    </ul>
+    </div>
+    </div>
+    </nav>
     </header>
     <div class="container">
+    <main role="main" class="pb-3">
+    @RenderBody()
+    </main>
+    </div> *@
+    <header>
+        <nav class="navbar">
+            <div class="logo_item">
+                <i class="bx bx-menu" id="sidebarOpen"></i>
+                <img src="images/ute_logo.png" alt="" />UTE
+            </div>
+            <div class="navbar_content">
+                <i class="bi bi-grid"></i>
+                <i class='bx bx-sun' id="darkLight"></i>
+                <i class='bx bx-bell'></i>
+                <img src="images/avatar_placeholder.png" alt="" class="profile" />
+            </div>
+        </nav>
+        @if (User.Identity.IsAuthenticated)
+        {
+            var maNguoiDung = User.FindFirstValue("Id");
+            <!-- sidebar -->
+            <nav class="sidebar">
+                <div class="menu_content">
+                    <ul class="menu_items">
+                        <div class="menu_title menu_dashboard"></div>
+                        <!-- start -->
+                        <li class="item">
+                            <a asp-area="" asp-controller="Home" asp-action="Index" class="nav_link">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-home-alt"></i>
+                                </span>
+                                <span class="navlink">Trang chủ</span>
+                            </a>
+                        </li>
+                        @if (User.IsInRole("Quản lý"))
+                        {
+                            <li class="item">
+                                <a asp-area="" asp-controller="NhanVien" asp-action="Index" class="nav_link">
+                                    <span class="navlink_icon">
+                                        <i class="bi bi-person"></i>
+                                    </span>
+                                    <span class="navlink">Nhân viên</span>
+                                </a>
+                            </li>
+                        }
+                        <li class="item">
+                            <a asp-area="" asp-controller="NhaCungCap" asp-action="Index" class="nav_link">
+                                <span class="navlink_icon">
+                                    <i class="bi bi-building"></i>
+                                </span>
+                                <span class="navlink">Nhà cung cấp</span>
+                            </a>
+                        </li>
+                        <li class="item">
+                            <a asp-area="" asp-controller="DanhMuc" asp-action="Index" class="nav_link">
+                                <span class="navlink_icon">
+                                    <i class="bi bi-diagram-2"></i>
+                                </span>
+                                <span class="navlink">Danh mục</span>
+                            </a>
+                        </li>
+                        <li class="item">
+                            <a asp-area="" asp-controller="ThietBi" asp-action="Index" class="nav_link">
+                                <span class="navlink_icon">
+                                    <i class="bi bi-inbox"></i>
+                                </span>
+                                <span class="navlink">Thiết bị</span>
+                            </a>
+                        </li>
+                        <li class="item">
+                            <div href="#" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bi bi-journal-text"></i>
+                                </span>
+                                <span class="navlink">Phiếu</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </div>
+                            <ul class="menu_items submenu">
+                                <a asp-controller="PhieuNhap" asp-action="Index" asp-route-maNguoiDung="@maNguoiDung" class="nav_link sublink">Phiếu nhập</a>
+                                <a asp-controller="PhieuXuat" asp-action="Index" asp-route-maNguoiDung="@maNguoiDung" class="nav_link sublink">Phiếu xuất</a>
+                            </ul>
+                        </li>
+                        <!-- end -->
+                    </ul>
+                    <ul class="menu_items">
+                        <div class="menu_title menu_setting"></div>
+                        <li class="item">
+                            <a href="#" class="nav_link">
+                                <span class="navlink_icon">
+                                    <i class="bi bi-person-circle"></i>
+                                </span>
+                                <span class="navlink">Thông tin cá nhân</span>
+                            </a>
+                        </li>
+                        <li class="item">
+                            <a href="#" class="nav_link">
+                                <span class="navlink_icon">
+                                    <i class="bi bi-pencil"></i>
+                                </span>
+                                <span class="navlink">Đổi mật khẩu</span>
+                            </a>
+                        </li>
+                        <li class="item">
+                            <a asp-area="" asp-controller="Home" asp-action="Logout" class="nav_link">
+                                <span class="navlink_icon">
+                                    <i class="bi bi-box-arrow-left"></i>
+                                </span>
+                                <span class="navlink">Đăng xuất</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- Sidebar Open / Close -->
+                    <div class="bottom_content">
+                        <div class="bottom expand_sidebar">
+                            <span> Expand</span>
+                            <i class='bx bx-log-in'></i>
+                        </div>
+                        <div class="bottom collapse_sidebar">
+                            <span> Collapse</span>
+                            <i class='bx bx-log-out'></i>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        }
+    </header>
+    <div class="container" style="margin-top: 65px; padding-top: 24px">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - QuanLyKho - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/navbar.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
