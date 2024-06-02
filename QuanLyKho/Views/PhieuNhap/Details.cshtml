@@ -1,54 +1,80 @@
-﻿@model QuanLyKho.ViewModels.PhieuNhapViewModels.PhieuNhapDetailsViewModel
+﻿@using QuanLyKho.Data.Enums
+@model QuanLyKho.ViewModels.PhieuNhapViewModels.PhieuNhapDetailsViewModel
 
-<div class="row">
-    <h2>Chi tiết phiếu nhập</h2>
-    <div class="col-12">
-        <p><strong>Mã phiếu nhập:</strong> @Html.DisplayFor(model => model.MaPhieuNhap)</p>
-        <p><strong>Tên nhân viên:</strong> @Html.DisplayFor(model => model.HoVaTen)</p>
-        <p><strong>Ngày nhập:</strong> @Html.DisplayFor(model => model.NgayNhap)</p>
-        <p><strong>Tổng tiền:</strong> @Model.TongTienFormat</p>
-        <p><strong>Ghi chú:</strong> @Html.DisplayFor(model => model.GhiChu)</p>
-        <p><strong>Trạng thái:</strong> @Html.DisplayFor(model => model.TrangThai)</p>
-    </div>
+<form asp-action="Details" method="post">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="row">
+        <h2>Chi tiết phiếu nhập</h2>
+        <div class="col-12">
 
-    <div class="col-12 mt-4">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Tên thiết bị</th>
-                    <th>Nhà cung cấp</th>
-                    <th>Số lượng còn</th>
-                    <th>Giá nhập</th>
-                    <th>Số lượng nhập</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0; i < Model.ThongTinThietBis.Count; i++)
+            <input type="hidden" name="id" value="@Model.MaPhieuNhap" />
+
+            <p><strong>Mã phiếu nhập:</strong> @Html.DisplayFor(model => model.MaPhieuNhap)</p>
+            <p><strong>Tên nhân viên:</strong> @Html.DisplayFor(model => model.HoVaTen)</p>
+            <p><strong>Ngày nhập:</strong> @Html.DisplayFor(model => model.NgayNhap)</p>
+            <p><strong>Tổng tiền:</strong> @Model.TongTienFormat VNĐ</p>
+            <p><strong>Ghi chú:</strong> @Html.DisplayFor(model => model.GhiChu)</p>
+            <div class="col-md-4">
+                <label asp-for="SelectedTrangThai" class="control-label"><strong>Trạng thái</strong></label>
+                <select asp-for="SelectedTrangThai" asp-items="@Model.TrangThaiList" class="form-select"
+                        disabled="@(Model.SelectedTrangThai == "Đã nhập kho" || Model.SelectedTrangThai == "Đã hủy")"></select>
+            </div>
+
+            <div class="col-12 mt-4">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên thiết bị</th>
+                            <th>Nhà cung cấp</th>
+                            <th>Số lượng nhập</th>
+                            <th>Giá nhập</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.ThongTinThietBis.Count; i++)
+                        {
+                            <tr>
+                                <td class="align-middle">
+                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].MaThietBi)
+                                </td>
+                                <td class="align-middle">
+                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].TenThietBi)
+                                </td>
+                                <td class="align-middle">
+                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].TenNhaCungCap)
+                                </td>
+                                <td class="align-middle">
+                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].SoLuongNhap)
+                                </td>
+                                <td class="align-middle">
+                                    @(Model.ThongTinThietBis[i].GiaBan.HasValue ? Model.ThongTinThietBis[i].GiaBan.Value * 0.9m : 0)
+                                </td>
+                            </tr>
+                            @if (i == Model.ThongTinThietBis.Count - 1)
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-right"><strong>Tổng cộng:</strong></td>
+                                    <td><strong>@Model.TongTienFormat VNĐ</strong></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Index" class="btn btn-secondary">Trở về</a>
+                @if (Model.SelectedTrangThai != "Đã nhập kho" && Model.SelectedTrangThai != "Đã hủy")
                 {
-                    <tr>
-                        <td class="align-middle">
-                            @Html.DisplayFor(model => model.ThongTinThietBis[i].MaThietBi)
-                        </td>
-                        <td class="align-middle">
-                            @Html.DisplayFor(model => model.ThongTinThietBis[i].TenThietBi)
-                        </td>
-                        <td class="align-middle">
-                            @Html.DisplayFor(model => model.ThongTinThietBis[i].TenNhaCungCap)
-                        </td>
-                        <td class="align-middle">
-                            @(Model.ThongTinThietBis[i].GiaBan.HasValue ? Model.ThongTinThietBis[i].GiaBan.Value * 0.9m : 0)
-                        </td>
-                        <td class="align-middle">
-                            @Html.DisplayFor(model => model.ThongTinThietBis[i].SoLuongNhap)
-                        </td>
-                    </tr>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
                 }
-            </tbody>
-        </table>
+            </div>
+        </div>
     </div>
-
-    <div class="d-flex justify-content-between mt-4">
-        <a asp-action="Index" class="btn btn-secondary">Trở về</a>
-    </div>
-</div>
+</form>

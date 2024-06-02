@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using QuanLyKho.Data.Enums;
 
 namespace QuanLyKho.ViewModels.PhieuNhapViewModels
 {
@@ -9,6 +11,9 @@ namespace QuanLyKho.ViewModels.PhieuNhapViewModels
         public string HoVaTen { get; set; }
         public string NgayNhap { get; set; }
         public string TrangThai { get; set; }
+        public List<SelectListItem> TrangThaiList { get; set; }
+        public string SelectedTrangThai { get; set; }
+        public string SelectedTrangThaiDisplayName { get; set; }
         public decimal TongTien { get; set; }
         public string TongTienFormat => TongTien.ToString("N0");
         public string GhiChu { get; set; }

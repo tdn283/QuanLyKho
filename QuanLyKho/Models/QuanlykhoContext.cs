@@ -37,10 +37,10 @@ public partial class QuanlykhoContext : DbContext
     {
         modelBuilder.Entity<ChiTietPhieuNhap>(entity =>
         {
+            entity.HasKey(e => new { e.MaPhieuNhap, e.MaThietBi });
             entity
                 .ToTable("ChiTietPhieuNhap");
 
-            entity.HasNoKey();
 
             entity.Property(e => e.DonGia)
                 .HasColumnType("money")
@@ -55,6 +55,18 @@ public partial class QuanlykhoContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("maThietBi");
+
+            entity.HasOne(d => d.MaPhieuNhapNavigation)
+                .WithMany(p => p.ChiTietPhieuNhaps)
+                .HasForeignKey(d => d.MaPhieuNhap)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ChiTietPhieuNhap_PhieuNhapHang");
+
+            entity.HasOne(d => d.MaThietBiNavigation)
+                .WithMany(p => p.ChiTietPhieuNhaps)
+                .HasForeignKey(d => d.MaThietBi)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ChiTietPhieuNhap_ThongTinThietBi");
         });
 
         modelBuilder.Entity<ChiTietPhieuXuat>(entity =>

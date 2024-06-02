@@ -24,10 +24,6 @@ namespace QuanLyKho.Migrations
 
             modelBuilder.Entity("QuanLyKho.Models.ChiTietPhieuNhap", b =>
                 {
-                    b.Property<decimal>("DonGia")
-                        .HasColumnType("money")
-                        .HasColumnName("donGia");
-
                     b.Property<string>("MaPhieuNhap")
                         .HasMaxLength(5)
                         .IsUnicode(false)
@@ -42,10 +38,14 @@ namespace QuanLyKho.Migrations
                         .HasColumnName("maThietBi")
                         .IsFixedLength();
 
+                    b.Property<decimal>("DonGia")
+                        .HasColumnType("money")
+                        .HasColumnName("donGia");
+
                     b.Property<int>("SoLuongNhap")
                         .HasColumnType("int");
 
-                    b.HasIndex("MaPhieuNhap");
+                    b.HasKey("MaPhieuNhap", "MaThietBi");
 
                     b.HasIndex("MaThietBi");
 
@@ -177,8 +177,8 @@ namespace QuanLyKho.Migrations
                     b.Property<string>("TrangThai")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(20)")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("trangThai");
 
                     b.HasKey("MaPhieuNhap")
@@ -225,8 +225,8 @@ namespace QuanLyKho.Migrations
                     b.Property<string>("TrangThai")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(20)")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("trangThai");
 
                     b.HasKey("MaPhieuXuat")
@@ -413,16 +413,16 @@ namespace QuanLyKho.Migrations
             modelBuilder.Entity("QuanLyKho.Models.ChiTietPhieuNhap", b =>
                 {
                     b.HasOne("QuanLyKho.Models.PhieuNhapHang", "MaPhieuNhapNavigation")
-                        .WithMany()
+                        .WithMany("ChiTietPhieuNhaps")
                         .HasForeignKey("MaPhieuNhap")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK__ChiTietPh__maPhi__37A5467C");
+                        .IsRequired()
+                        .HasConstraintName("FK_ChiTietPhieuNhap_PhieuNhapHang");
 
                     b.HasOne("QuanLyKho.Models.ThongTinThietBi", "MaThietBiNavigation")
-                        .WithMany()
+                        .WithMany("ChiTietPhieuNhaps")
                         .HasForeignKey("MaThietBi")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK__ChiTietPh__maThi__38996AB5");
+                        .IsRequired()
+                        .HasConstraintName("FK_ChiTietPhieuNhap_ThongTinThietBi");
 
                     b.Navigation("MaPhieuNhapNavigation");
 
@@ -511,11 +511,21 @@ namespace QuanLyKho.Migrations
                     b.Navigation("ThongTinThietBis");
                 });
 
+            modelBuilder.Entity("QuanLyKho.Models.PhieuNhapHang", b =>
+                {
+                    b.Navigation("ChiTietPhieuNhaps");
+                });
+
             modelBuilder.Entity("QuanLyKho.Models.TaiKhoan", b =>
                 {
                     b.Navigation("PhieuNhapHangs");
 
                     b.Navigation("PhieuXuatHangs");
+                });
+
+            modelBuilder.Entity("QuanLyKho.Models.ThongTinThietBi", b =>
+                {
+                    b.Navigation("ChiTietPhieuNhaps");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.VaiTro", b =>

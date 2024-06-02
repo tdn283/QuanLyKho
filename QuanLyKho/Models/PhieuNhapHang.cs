@@ -17,4 +17,5 @@ public partial class PhieuNhapHang
     public string? GhiChu { get; set; }
 
     public virtual TaiKhoan? MaNguoiDungNavigation { get; set; }
+    public virtual ICollection<ChiTietPhieuNhap> ChiTietPhieuNhaps { get; set; }
 }

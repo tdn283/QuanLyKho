@@ -76,7 +76,6 @@
                                 @Html.DisplayFor(modelItem => item.GhiChu)
                             </td>
                             <td class="align-middle">
-                                <a type="button" class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.MaPhieuNhap">Edit</a>
                                 <a type="button" class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.MaPhieuNhap">Details</a>
                                 <a type="button" class="btn btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa phiếu nhập này không?');" asp-action="Delete" asp-route-id="@item.MaPhieuNhap">Delete</a>
                             </td>

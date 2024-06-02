@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using QuanLyKho.Data.Enums;
 using QuanLyKho.Data.Interface;
+using QuanLyKho.Data.Service;
 using QuanLyKho.Helper;
 using QuanLyKho.Models;
 using QuanLyKho.ViewModels.PhieuNhapViewModels;
@@ -25,13 +26,12 @@ namespace QuanLyKho.Controllers
             var phieuNhapList = await _phieuNhapService.GetAllPhieuNhapAsync();
             var nguoiDungList = await _context.TaiKhoans.ToListAsync();
 
-            var trangThaiList = phieuNhapList.Select(pn => new SelectListItem
+            var trangThaiList = phieuNhapList.Select(pn => pn.TrangThai).Distinct().Select(trangThai => new SelectListItem
             {
-                Value = pn.TrangThai,
-                Text = pn.TrangThai,
-                Selected = pn.TrangThai == trangThaiFilter
+                Value = trangThai,
+                Text = trangThai,
+                Selected = trangThai == trangThaiFilter
             }).ToList();
-
             ViewBag.TrangThaiList = trangThaiList;
 
             searchString = string.IsNullOrEmpty(searchString) ? "" : searchString.ToLower();
@@ -165,8 +165,7 @@ namespace QuanLyKho.Controllers
             }
 
             var chiTietPhieuNhapList = await _context.ChiTietPhieuNhaps
-                .Include(tb => tb.MaThietBiNavigation)
-                .Where(ctpn => ctpn.MaPhieuNhap == phieuNhap.MaPhieuNhap)
+                .FromSqlRaw("SELECT * FROM ChiTietPhieuNhap WHERE maPhieuNhap = {0}", id)
                 .ToListAsync();
 
             var thietBiDetailsItem = chiTietPhieuNhapList.Select(ctpn =>
@@ -195,7 +194,126 @@ namespace QuanLyKho.Controllers
                 GhiChu = phieuNhap.GhiChu,
                 ThongTinThietBis = thietBiDetailsItem
             };
+
+            phieuNhapDetailsVM.TrangThaiList = Enum.GetValues(typeof(TrangThaiPhieuNhap))
+                .Cast<TrangThaiPhieuNhap>()
+                .Select(value => new SelectListItem
+                {
+                    Value = EnumHelper.GetDisplayName(value),
+                    Text = EnumHelper.GetDisplayName(value),
+                }).ToList();
+
+            // Set the text of selected value to the current status
+            phieuNhapDetailsVM.SelectedTrangThai = phieuNhap.TrangThai;
+
+
             return View(phieuNhapDetailsVM);
         }
+
+        // POST: PhieuNhap/Details/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Details(string id, string SelectedTrangThai, PhieuNhapDetailsViewModel phieuNhapDetailsVM)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var phieuNhap = await _phieuNhapService.GetPhieuNhapByIdAsync(id);
+            if (phieuNhap == null)
+            {
+                return NotFound();
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Update the status of the order, then update SoLuongCon of each product
+                phieuNhap.TrangThai = SelectedTrangThai;
+                if (SelectedTrangThai == "Đã nhập kho")
+                {
+                    // Get the associated ChiTietPhieuNhap records
+                    var chiTietPhieuNhapList = await _context.ChiTietPhieuNhaps
+                        .FromSqlRaw("SELECT * FROM ChiTietPhieuNhap WHERE maPhieuNhap = {0}", id)
+                        .ToListAsync();
+
+                    // Update SoLuongCon for each ThongTinThietBi
+                    foreach (var chiTiet in chiTietPhieuNhapList)
+                    {
+                        var thietBi = await _context.ThongTinThietBis.FindAsync(chiTiet.MaThietBi);
+                        if (thietBi != null)
+                        {
+                            thietBi.SoLuongCon += chiTiet.SoLuongNhap;
+                        }
+                    }
+                }
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                await transaction.RollbackAsync();
+
+                return BadRequest("Concurrency error occurred. Please try again.");
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, "An error occurred while updating the data. Please try again.");
+            }
+            TempData["SuccessMessage"] = "Phiếu nhập đã được cập nhật thành công!";
+            return RedirectToAction("Details", new { id });
+        }
+
+        // GET: PhieuNhap/Delete/5
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var phieuNhap = await _phieuNhapService.GetPhieuNhapByIdAsync(id);
+            if (phieuNhap == null)
+            {
+                return NotFound();
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var chiTietPhieuNhap = await _context.ChiTietPhieuNhaps
+                    .Where(c => c.MaPhieuNhap == id)
+                    .ToListAsync();
+
+                if (chiTietPhieuNhap.Any())
+                {
+                    _context.ChiTietPhieuNhaps.RemoveRange(chiTietPhieuNhap);
+                    await _context.SaveChangesAsync();
+                }
+
+                await _phieuNhapService.DeletePhieuNhapAsync(id);
+
+                await transaction.CommitAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                await transaction.RollbackAsync();
+
+                return BadRequest("Concurrency error occurred. Please try again.");
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+
+                // Log the exception
+                // Optionally, you can rethrow the exception or return an appropriate response
+                return StatusCode(500, "An error occurred while deleting the data. Please try again.");
+            }
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

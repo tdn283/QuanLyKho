@@ -28,5 +28,6 @@ public partial class ThongTinThietBi
     public virtual DanhMucThietBi? MaDanhMucNavigation { get; set; }
 
     public virtual NhaCungCap? MaNhaCungCapNavigation { get; set; }
+    public virtual ICollection<ChiTietPhieuNhap> ChiTietPhieuNhaps { get; set; }
 
 }
