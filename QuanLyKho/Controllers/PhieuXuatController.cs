@@ -73,7 +73,7 @@ namespace QuanLyKho.Controllers
             ViewBag.NhanVienList = nhanVienList.Select(nv => new SelectListItem
             {
                 Value = nv.TenVn,
-                Text = nv.TenVn 
+                Text = nv.TenVn
             });
             if (string.IsNullOrEmpty(maNguoiDung))
             {
@@ -86,7 +86,7 @@ namespace QuanLyKho.Controllers
                 return NotFound();
             }
 
-            var phieuXuatVM = new PhieuXuatCreateViewModel()
+            var phieuXuatCreateVM = new PhieuXuatCreateViewModel()
             {
                 MaNguoiDung = maNguoiDung,
                 HoVaTen = nguoiDung.HoVaTen,
@@ -103,7 +103,7 @@ namespace QuanLyKho.Controllers
                     SoLuongXuat = 0
                 }).ToList()
             };
-            return View(phieuXuatVM);
+            return View(phieuXuatCreateVM);
         }
 
         // POST: PhieuXuat/Create
@@ -121,28 +121,39 @@ namespace QuanLyKho.Controllers
                 Value = nv.TenVn,
                 Text = nv.TenVn
             });
+
+            foreach (var item in phieuXuatCreateVM.ThongTinThietBis)
+            {
+                if (item.SoLuongXuat < 0 || item.SoLuongXuat > item.SoLuongCon)
+                {
+                    ModelState.AddModelError("SoLuongXuat", "Số lượng xuất không hợp lệ.");
+                    return View(phieuXuatCreateVM);
+                }
+            }
+
+
             if (ModelState.IsValid)
             {
                 using var transaction = _context.Database.BeginTransaction();
                 try
                 {
-                    var phieuNhap = new PhieuXuatHang();
-                    phieuNhap.MaPhieuXuat = AutoIncrementHelper.TaoMaPhieuXuatMoi(_context);
-                    phieuNhap.MaNguoiDung = phieuXuatCreateVM.MaNguoiDung;
-                    phieuNhap.NhanVienXuat = phieuXuatCreateVM.NguoiYeuCau?.Normalize(NormalizationForm.FormC);
-                    phieuNhap.NgayXuat = DateTime.Now;
-                    phieuNhap.TongTien = phieuXuatCreateVM.TongTien;
-                    phieuNhap.GhiChu = phieuXuatCreateVM.GhiChu?.Normalize(NormalizationForm.FormC);
-                    phieuNhap.TrangThai = EnumHelper.GetDisplayName(TrangThaiPhieuXuat.ChoDuyet).Normalize(NormalizationForm.FormC);
+                    var phieuXuat = new PhieuXuatHang();
+                    phieuXuat.MaPhieuXuat = AutoIncrementHelper.TaoMaPhieuXuatMoi(_context);
+                    phieuXuat.MaNguoiDung = phieuXuatCreateVM.MaNguoiDung;
+                    phieuXuat.NhanVienXuat = phieuXuatCreateVM.NguoiYeuCau?.Normalize(NormalizationForm.FormC);
+                    phieuXuat.NgayXuat = DateTime.Now;
+                    phieuXuat.TongTien = phieuXuatCreateVM.TongTien;
+                    phieuXuat.GhiChu = phieuXuatCreateVM.GhiChu?.Normalize(NormalizationForm.FormC);
+                    phieuXuat.TrangThai = EnumHelper.GetDisplayName(TrangThaiPhieuXuat.ChoDuyet).Normalize(NormalizationForm.FormC);
 
-                    await _phieuXuatService.AddPhieuXuatAsync(phieuNhap);
+                    await _phieuXuatService.AddPhieuXuatAsync(phieuXuat);
 
                     foreach (var item in phieuXuatCreateVM.ThongTinThietBis)
                     {
                         if (item.SoLuongXuat > 0)
                         {
                             var parameters = new List<SqlParameter>();
-                            parameters.Add(new SqlParameter("@maPhieuXuat", phieuNhap.MaPhieuXuat));
+                            parameters.Add(new SqlParameter("@maPhieuXuat", phieuXuat.MaPhieuXuat));
                             parameters.Add(new SqlParameter("@maThietBi", item.MaThietBi));
                             parameters.Add(new SqlParameter("@soLuongXuat", item.SoLuongXuat));
                             parameters.Add(new SqlParameter("@donGiaBan", item.GiaBan));
@@ -162,6 +173,26 @@ namespace QuanLyKho.Controllers
                     await transaction.RollbackAsync();
                     ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi trong lúc tạo phiếu xuất.");
                 }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(phieuXuatCreateVM.NguoiYeuCau))
+                {
+                    ModelState.AddModelError("NguoiYeuCau", "Vui lòng chọn nhân viên yêu cầu.");
+                }
+                var thietBiList = await _context.ThongTinThietBis
+                    .Include(tb => tb.MaNhaCungCapNavigation)
+                    .ToListAsync();
+                phieuXuatCreateVM.ThongTinThietBis = thietBiList.Select(tb => new ThongTinThietBiCreateItem
+                {
+                    MaThietBi = tb.MaThietBi,
+                    MaNhaCungCap = tb.MaNhaCungCap,
+                    TenNhaCungCap = tb.MaNhaCungCapNavigation.TenNhaCungCap,
+                    TenThietBi = tb.TenThietBi,
+                    SoLuongCon = tb.SoLuongCon,
+                    GiaBan = tb.GiaBan,
+                    SoLuongXuat = 0
+                }).ToList();
             }
             return View(phieuXuatCreateVM);
         }

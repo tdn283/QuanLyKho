@@ -1,90 +1,124 @@
 ﻿@using QuanLyKho.Data.Enums
 @model QuanLyKho.ViewModels.PhieuXuatViewModels.PhieuXuatDetailsViewModel
 
-<form asp-action="Details" method="post">
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-    <div class="row">
-        <h2>Chi tiết phiếu xuất</h2>
-        <div class="col-12">
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Chi tiết phiếu xuất</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Details" method="post">
+                        <input type="hidden" name="id" value="@Model.MaPhieuXuat" />
 
-            <input type="hidden" name="id" value="@Model.MaPhieuXuat" />
-
-            <p><strong>Mã phiếu nhập:</strong> @Html.DisplayFor(model => model.MaPhieuXuat)</p>
-            <p><strong>Tên nhân viên:</strong> @Html.DisplayFor(model => model.HoVaTen)</p>
-            <p><strong>Nhân viên yêu cầu:</strong> @Html.DisplayFor(model => model.NguoiYeuCau)</p>
-            <p><strong>Ngày xuất:</strong> @Html.DisplayFor(model => model.NgayXuat)</p>
-            <p><strong>Tổng tiền:</strong> @Model.TongTienFormat VNĐ</p>
-            <p><strong>Ghi chú:</strong> @Html.DisplayFor(model => model.GhiChu)</p>
-            <div class="col-md-4">
-                <label asp-for="SelectedTrangThai" class="control-label"><strong>Trạng thái</strong></label>
-                <select asp-for="SelectedTrangThai" asp-items="@Model.TrangThaiList" class="form-select" id="statusDropdown"
-                        disabled="@(Model.SelectedTrangThai == "Đã duyệt" || Model.SelectedTrangThai == "Đã hủy")"></select>
-            </div>
-
-            <div class="col-12 mt-4">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Tên thiết bị</th>
-                            <th>Nhà cung cấp</th>
-                            <th>Số lượng xuất</th>
-                            <th>Giá bán</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < Model.ThongTinThietBis.Count; i++)
-                        {
-                            <tr>
-                                <td class="align-middle">
-                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].MaThietBi)
-                                </td>
-                                <td class="align-middle">
-                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].TenThietBi)
-                                </td>
-                                <td class="align-middle">
-                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].TenNhaCungCap)
-                                </td>
-                                <td class="align-middle">
-                                    @Html.DisplayFor(model => model.ThongTinThietBis[i].SoLuongXuat)
-                                </td>
-                                <td class="align-middle">
-                                    @(Model.ThongTinThietBis[i].GiaBan.HasValue ? Model.ThongTinThietBis[i].GiaBan.Value : 0)
-                                </td>
-                            </tr>
-                            @if (i == Model.ThongTinThietBis.Count - 1)
-                            {
+                        <table class="table table-borderless">
+                            <tbody>
                                 <tr>
-                                    <td colspan="4" class="text-right"><strong>Tổng cộng:</strong></td>
-                                    <td><strong>@Model.TongTienFormat VNĐ</strong></td>
+                                    <th>Mã phiếu xuất:</th>
+                                    <td>@Html.DisplayFor(model => model.MaPhieuXuat)</td>
                                 </tr>
+                                <tr>
+                                    <th>Tên nhân viên:</th>
+                                    <td>@Html.DisplayFor(model => model.HoVaTen)</td>
+                                </tr>
+                                <tr>
+                                    <th>Người yêu cầu:</th>
+                                    <td>@Html.DisplayFor(model => model.NguoiYeuCau)</td>
+                                </tr>
+                                <tr>
+                                    <th>Ngày xuất:</th>
+                                    <td>@Html.DisplayFor(model => model.NgayXuat)</td>
+                                </tr>
+                                <tr>
+                                    <th>Tổng tiền:</th>
+                                    <td>@Model.TongTienFormat VNĐ</td>
+                                </tr>
+                                <tr>
+                                    <th>Ghi chú:</th>
+                                    <td>@Html.DisplayFor(model => model.GhiChu)</td>
+                                </tr>
+                                <tr>
+                                    <th>Trạng thái:</th>
+                                    <td>
+                                        <select asp-for="SelectedTrangThai" asp-items="@Model.TrangThaiList" class="form-select" id="statusDropdown"
+                                                disabled="@(Model.SelectedTrangThai == "Đã duyệt" || Model.SelectedTrangThai == "Đã hủy")"></select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="col-12 mt-4">
+                            <h3 class="text-center">Danh sách thiết bị xuất</h3>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên thiết bị</th>
+                                        <th class="text-center">Số lượng xuất</th>
+                                        <th class="text-end">Giá bán</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < Model.ThongTinThietBis.Count; i++)
+                                    {
+                                        <tr>
+                                            <td class="align-middle">
+                                                @Html.DisplayFor(model => model.ThongTinThietBis[i].MaThietBi)
+                                            </td>
+                                            <td class="align-middle">
+                                                @Html.DisplayFor(model => model.ThongTinThietBis[i].TenThietBi)
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                @Html.DisplayFor(model => model.ThongTinThietBis[i].SoLuongXuat)
+                                            </td>
+                                            <td class="align-middle text-end">
+                                                @Html.HiddenFor(model => model.ThongTinThietBis[i].GiaBan)
+                                                @(String.Format("{0:n0} VNĐ", Model.ThongTinThietBis[i].GiaBan))
+                                            </td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td colspan="3" class="text-start fw-bold">Tổng cộng:</td>
+                                        <td class="text-end fw-bold">@Model.TongTienFormat VNĐ</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">Trở về</a>
+                            @if (Model.SelectedTrangThai != "Đã duyệt" && Model.SelectedTrangThai != "Đã hủy")
+                            {
+                                <button type="submit" class="btn btn-primary" id="saveButton"
+                                @if (Model.SelectedTrangThai == "Chờ duyệt")
+                                {
+                                    <text> disabled </text>
+                                }>
+                                        Lưu
+                                    </button>
                             }
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <div class="d-flex justify-content-between mt-4">
-                <a asp-action="Index" class="btn btn-secondary">Trở về</a>
-                @if (Model.SelectedTrangThai != "Đã duyệt" && Model.SelectedTrangThai != "Đã hủy")
-                {
-                    <button type="submit" class="btn btn-primary" id="saveButton"
-                    @if (Model.SelectedTrangThai == "Chờ duyệt")
-                    {
-                        <text> disabled </text>
-                    }>
-                    Lưu
-                </button>
-                }
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</form>
+</div>
+
+<div class="toast-container position-fixed end-0 p-3" style="top: 77px">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="1000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @TempData["SuccessMessage"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+</div>
 
 <script>
     document.getElementById('statusDropdown').addEventListener('change', function () {
@@ -105,6 +139,14 @@
             saveButton.disabled = true;
         } else {
             saveButton.disabled = false;
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var successToast = document.getElementById('successToast');
+        if (successToast) {
+            var toast = new bootstrap.Toast(successToast);
+            toast.show();
         }
     });
 </script>

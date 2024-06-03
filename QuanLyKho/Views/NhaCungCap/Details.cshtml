@@ -1,15 +1,43 @@
-﻿@model QuanLyKho.ViewModels.NhaCungCapViewModel.NhaCungCapViewModel
+﻿@using QuanLyKho.ViewModels
+@model QuanLyKho.ViewModels.NhaCungCapViewModel.NhaCungCapViewModel
 
 <div class="container mt-4">
-    <div class="col-md-12">
-        <h2>Chi tiết nhà cung cấp</h2>
-        <p><strong>Mã nhà cung cấp:</strong> @Model.MaNhaCungCap</p>
-        <p><strong>Tên nhà cung cấp:</strong> @Model.TenNhaCungCap</p>
-        <p><strong>Địa chỉ:</strong> @Model.DiaChi</p>
-        <p><strong>Số điện thoại:</strong> @Model.SoDienThoai</p>
-        <p><strong>Email:</strong> @Model.Email</p>
-    </div>
-    <div class="d-flex justify-content-start mt-4">
-        <a asp-action="Index" class="btn btn-secondary">Trở về</a>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="card-title">Chi tiết nhà cung cấp</h2>
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th>Mã nhà cung cấp:</th>
+                                        <td>@Model.MaNhaCungCap</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tên nhà cung cấp:</th>
+                                        <td>@Model.TenNhaCungCap</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Địa chỉ:</th>
+                                        <td>@Model.DiaChi</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Số điện thoại:</th>
+                                        <td>@Model.SoDienThoai</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email:</th>
+                                        <td>@Model.Email</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <a asp-action="Index" class="btn btn-secondary">Trở về</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

@@ -177,7 +177,7 @@ body {
     }
 
     .navlink_icon:hover {
-        background: var(--blue-color);
+        background: #f0f0f5;
     }
 
 .sidebar .nav_link {
@@ -196,12 +196,12 @@ body {
 }
 
 .nav_link:hover {
-    color: var(--white-color);
-    background: var(--blue-color);
+    color: #007bff;
+    background: #f0f0f5;
 }
 
 .sidebar.close .nav_link:hover {
-    background: var(--white-color);
+    background: #f0f0f5;
 }
 
 .submenu_item {
@@ -277,6 +277,14 @@ body {
 
 .sidebar.hoverable .collapse_sidebar {
     display: none;
+}
+
+.sidebar .menu_items .item.active {
+}
+
+.sidebar .menu_items .item.active .nav_link {
+    background: #f0f0f5;
+    color: #007bff;
 }
 
 #sidebarOpen {

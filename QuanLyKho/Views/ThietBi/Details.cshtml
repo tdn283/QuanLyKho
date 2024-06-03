@@ -4,25 +4,55 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
-            <h2>Chi tiết thiết bị</h2>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <p><strong>Mã thiết bị:</strong> @Model.MaThietBi</p>
-                    <p><strong>Tên thiết bị:</strong> @Model.TenThietBi</p>
-                    <p><strong>Model:</strong> @Model.Model</p>
-                    <p><strong>Danh mục:</strong> @Model.TenDanhMuc</p>
-                    <p><strong>Nhà cung cấp:</strong> @Model.TenNhaCungCap</p>
-                    <p><strong>Hãng sản xuất:</strong> @Model.NhaSanXuat</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Thời gian bảo hành:</strong> @Model.ThoiGianBaoHanh</p>
-                    <p><strong>Trạng thái:</strong> @Model.TrangThai</p>
-                    <p><strong>Số lượng còn lại:</strong> @Model.SoLuongCon</p>
-                    <p><strong>Giá bán:</strong> @Model.GiaBan</p>
-                    <p><strong>Mô tả:</strong> @Model.MoTa</p>
-                </div>
-            </div>
+            <h2 class="text-center">Thông số kỹ thuật</h2>
+            <table class="table table-bordered spec-table">
+                <tbody>
+                    <tr>
+                        <th scope="row" class="vertical-header">Mã thiết bị</th>
+                        <td>@Model.MaThietBi</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="vertical-header">Tên thiết bị</th>
+                        <td>@Model.TenThietBi</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="vertical-header">Model</th>
+                        <td>@Model.Model</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="vertical-header">Danh mục</th>
+                        <td>@Model.TenDanhMuc</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="vertical-header">Nhà cung cấp</th>
+                        <td>@Model.TenNhaCungCap</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="vertical-header">Hãng sản xuất</th>
+                        <td>@Model.NhaSanXuat</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="vertical-header">Thời gian bảo hành</th>
+                        <td>@Model.ThoiGianBaoHanh tháng</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="vertical-header">Trạng thái</th>
+                        <td>@Model.TrangThai</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="vertical-header">Số lượng còn lại</th>
+                        <td>@Model.SoLuongCon</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="vertical-header">Giá bán</th>
+                        <td>@Model.GiaBanFormat VNĐ</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="vertical-header">Mô tả</th>
+                        <td>@Model.MoTa</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     <div class="d-flex justify-content-start mt-4">

@@ -160,8 +160,9 @@ namespace QuanLyKho.Controllers
             }).ToList();
             ViewBag.VaiTroList = new SelectList(vaiTroList, "MaVt", "TenVt", nhanVien.MaVaiTro);
 
-            var nhanVienEditVM = new NhanVienCreateViewModel
+            var nhanVienEditVM = new NhanVienEditViewModel
             {
+                MaNguoiDung = nhanVien.MaNguoiDung,
                 TenDangNhap = nhanVien.TenDangNhap,
                 MatKhau = nhanVien.MatKhau,
                 Email = nhanVien.Email,
@@ -176,7 +177,7 @@ namespace QuanLyKho.Controllers
         // POST: NhanVien/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, NhanVienCreateViewModel nhanVienEditVM)
+        public async Task<IActionResult> Edit(string id, NhanVienEditViewModel nhanVienEditVM)
         {
             var vaiTroList = _context.VaiTros.Select(vt => new
             {
@@ -210,6 +211,7 @@ namespace QuanLyKho.Controllers
                 }
                 else
                 {
+                    nhanVien.MaNguoiDung = id;
                     nhanVien.TenDangNhap = nhanVienEditVM.TenDangNhap;
                     nhanVien.MatKhau = nhanVienEditVM.MatKhau;
                     nhanVien.Email = nhanVienEditVM.Email;

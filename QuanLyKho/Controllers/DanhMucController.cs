@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using QuanLyKho.Data.Interface;
+using QuanLyKho.Data.Service;
 using QuanLyKho.Helper;
 using QuanLyKho.Models;
 using QuanLyKho.ViewModels.DanhMucViewModels;
@@ -70,6 +71,85 @@ namespace QuanLyKho.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(danhMucCreateVM);
+        }
+
+        // GET: DanhMuc/Edit/5
+        public async Task<IActionResult> Edit(string id)
+        {
+            var danhMuc = await _danhMucService.GetDanhMucIdAsync(id);
+            if (danhMuc == null)
+            {
+                return NotFound();
+            }
+            var danhMucEditVM = new DanhMucEditViewModel
+            {
+                MaDanhMuc = danhMuc.MaDanhMuc,
+                TenDanhMuc = danhMuc.TenDanhMuc,
+                MoTa = danhMuc.MoTa ?? ""
+            };
+            return View(danhMucEditVM);
+        }
+
+        // POST: DanhMuc/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, DanhMucEditViewModel danhMucEditVM)
+        {
+            if (id != danhMucEditVM.MaDanhMuc)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                var danhMuc = new DanhMucThietBi
+                {
+                    MaDanhMuc = danhMucEditVM.MaDanhMuc,
+                    TenDanhMuc = danhMucEditVM.TenDanhMuc,
+                    MoTa = danhMucEditVM.MoTa ?? ""
+                };
+                await _danhMucService.UpdateDanhMucAsync(id, danhMuc);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(danhMucEditVM);
+        }
+
+        // GET: DanhMuc/Details/5
+        public async Task<IActionResult> Details(string id)
+        {
+            var danhMuc = await _danhMucService.GetDanhMucIdAsync(id);
+            if (danhMuc == null)
+            {
+                return NotFound();
+            }
+            var danhMucDetailVM = new DanhMucViewModel
+            {
+                MaDanhMuc = danhMuc.MaDanhMuc,
+                TenDanhMuc = danhMuc.TenDanhMuc,
+                MoTa = danhMuc.MoTa ?? ""
+            };
+            return View(danhMucDetailVM);
+        }
+
+        // DELETE: DanhMuc/Delete/5
+        public async Task<IActionResult> Delete(string id)
+        {
+            var danhMuc = await _danhMucService.GetDanhMucIdAsync(id);
+            if (danhMuc == null)
+            {
+                return NotFound();
+            }
+
+            // Get list of ThietBi with MaDanhMuc = id then set maDanhMuc = null
+            var thietBiList = _context.ThongTinThietBis.Where(tb => tb.MaDanhMuc == id).ToList();
+            foreach (var thietBi in thietBiList)
+            {
+                thietBi.MaDanhMuc = null;
+            }
+            await _context.SaveChangesAsync();
+
+
+            await _danhMucService.DeleteDanhMucAsync(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

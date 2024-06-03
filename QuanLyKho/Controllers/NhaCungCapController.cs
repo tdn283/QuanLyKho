@@ -123,7 +123,7 @@ namespace QuanLyKho.Controllers
             {
                 var nhaCungCap = new NhaCungCap
                 {
-                    MaNhaCungCap = nhaCungCapVM.MaNhaCungCap,
+                    MaNhaCungCap = id,
                     TenNhaCungCap = nhaCungCapVM.TenNhaCungCap,
                     DiaChi = nhaCungCapVM.DiaChi,
                     SoDienThoai = nhaCungCapVM.SoDienThoai,
@@ -145,6 +145,14 @@ namespace QuanLyKho.Controllers
             {
                 return NotFound();
             }
+
+            // Get list of ThietBi with MaDanhMuc = id then set maDanhMuc = null
+            var thietBiList = _context.ThongTinThietBis.Where(tb => tb.MaNhaCungCap == id).ToList();
+            foreach (var thietBi in thietBiList)
+            {
+                thietBi.MaNhaCungCap = null;
+            }
+            await _context.SaveChangesAsync();
 
             await _nhaCungCapService.DeleteNhaCungCapAsync(id);
             return RedirectToAction(nameof(Index));

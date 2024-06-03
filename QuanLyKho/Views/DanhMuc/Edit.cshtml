@@ -1,7 +1,7 @@
 ﻿@using QuanLyKho.ViewModels
-@model QuanLyKho.ViewModels.DanhMucViewModels.DanhMucCreateViewModel
+@model QuanLyKho.ViewModels.DanhMucViewModels.DanhMucEditViewModel
 @{
-    ViewData["Title"] = "Tạo mới danh mục";
+    ViewData["Title"] = "Cập nhật danh mục";
 }
 
 <div class="container mt-4">
@@ -9,10 +9,10 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">Thêm danh mục mới</h2>
+                    <h2 class="mb-0">Cập nhật danh mục</h2>
                 </div>
                 <div class="card-body">
-                    <form asp-controller="DanhMuc" asp-action="Create" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    <form asp-controller="DanhMuc" asp-action="Edit" enctype="multipart/form-data" class="needs-validation" novalidate>
                         <div class="mb-3">
                             <label asp-for="TenDanhMuc" class="form-label">Tên danh mục</label>
                             <input asp-for="TenDanhMuc" class="form-control" placeholder="Tên danh mục" required>
@@ -28,7 +28,7 @@
 
                         <div class="d-flex justify-content-between mt-4">
                             <a asp-action="Index" class="btn btn-secondary">Trở về</a>
-                            <button type="submit" class="btn btn-primary">Thêm danh mục</button>
+                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                         </div>
                     </form>
                 </div>

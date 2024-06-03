@@ -13,27 +13,6 @@
     <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
 </head>
 <body>
-    @* <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-    <div class="container-fluid">
-    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">QuanLyKho</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-    aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-    <ul class="navbar-nav flex-grow-1">
-    <partial name="~/Views/Account/_LoginPartial.cshtml" />
-    </ul>
-    </div>
-    </div>
-    </nav>
-    </header>
-    <div class="container">
-    <main role="main" class="pb-3">
-    @RenderBody()
-    </main>
-    </div> *@
     <header>
         <nav class="navbar">
             <div class="logo_item">
@@ -50,13 +29,15 @@
         @if (User.Identity.IsAuthenticated)
         {
             var maNguoiDung = User.FindFirstValue("Id");
+            var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+            var isSubmenuActive = currentController == "PhieuNhap" || currentController == "PhieuXuat";
             <!-- sidebar -->
             <nav class="sidebar">
                 <div class="menu_content">
                     <ul class="menu_items">
                         <div class="menu_title menu_dashboard"></div>
                         <!-- start -->
-                        <li class="item">
+                        <li class="item @(currentController == "Home" ? "active" : "")">
                             <a asp-area="" asp-controller="Home" asp-action="Index" class="nav_link">
                                 <span class="navlink_icon">
                                     <i class="bx bx-home-alt"></i>
@@ -66,7 +47,7 @@
                         </li>
                         @if (User.IsInRole("Quản lý"))
                         {
-                            <li class="item">
+                            <li class="item @(currentController == "NhanVien" ? "active" : "")">
                                 <a asp-area="" asp-controller="NhanVien" asp-action="Index" class="nav_link">
                                     <span class="navlink_icon">
                                         <i class="bi bi-person"></i>
@@ -75,7 +56,7 @@
                                 </a>
                             </li>
                         }
-                        <li class="item">
+                        <li class="item @(currentController == "NhaCungCap" ? "active" : "")">
                             <a asp-area="" asp-controller="NhaCungCap" asp-action="Index" class="nav_link">
                                 <span class="navlink_icon">
                                     <i class="bi bi-building"></i>
@@ -83,7 +64,7 @@
                                 <span class="navlink">Nhà cung cấp</span>
                             </a>
                         </li>
-                        <li class="item">
+                        <li class="item @(currentController == "DanhMuc" ? "active" : "")">
                             <a asp-area="" asp-controller="DanhMuc" asp-action="Index" class="nav_link">
                                 <span class="navlink_icon">
                                     <i class="bi bi-diagram-2"></i>
@@ -91,7 +72,7 @@
                                 <span class="navlink">Danh mục</span>
                             </a>
                         </li>
-                        <li class="item">
+                        <li class="item @(currentController == "ThietBi" ? "active" : "")">
                             <a asp-area="" asp-controller="ThietBi" asp-action="Index" class="nav_link">
                                 <span class="navlink_icon">
                                     <i class="bi bi-inbox"></i>
@@ -100,16 +81,20 @@
                             </a>
                         </li>
                         <li class="item">
-                            <div href="#" class="nav_link submenu_item">
+                            <div href="#" class="nav_link submenu_item @(isSubmenuActive ? "show_submenu" : "")">
                                 <span class="navlink_icon">
                                     <i class="bi bi-journal-text"></i>
                                 </span>
                                 <span class="navlink">Phiếu</span>
                                 <i class="bx bx-chevron-right arrow-left"></i>
                             </div>
-                            <ul class="menu_items submenu">
-                                <a asp-controller="PhieuNhap" asp-action="Index" asp-route-maNguoiDung="@maNguoiDung" class="nav_link sublink">Phiếu nhập</a>
-                                <a asp-controller="PhieuXuat" asp-action="Index" asp-route-maNguoiDung="@maNguoiDung" class="nav_link sublink">Phiếu xuất</a>
+                            <ul class="menu_items submenu @(isSubmenuActive ? "open" : "")">
+                                <li class="item @(currentController == "PhieuNhap" ? "active" : "")">
+                                    <a asp-controller="PhieuNhap" asp-action="Index" asp-route-maNguoiDung="@maNguoiDung" class="nav_link sublink">Phiếu nhập</a>
+                                </li>
+                                <li class="item @(currentController == "PhieuXuat" ? "active" : "")">
+                                    <a asp-controller="PhieuXuat" asp-action="Index" asp-route-maNguoiDung="@maNguoiDung" class="nav_link sublink">Phiếu xuất</a>
+                                </li>
                             </ul>
                         </li>
                         <!-- end -->
