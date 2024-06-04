@@ -1,0 +1,83 @@
+﻿@model QuanLyKho.ViewModels.NhanVienViewModels.NhanVienProfileViewModel
+@{
+    ViewData["Title"] = "Cập nhật thông tin cá nhân";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Cập nhật thông tin cá nhân</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="NhanVien" asp-action="ChangeProfile" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        <input type="hidden" asp-for="MaNguoiDung" />
+                        <input type="hidden" asp-for="MaVaiTro" />
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="HoVaTen" class="form-label">Họ và tên</label>
+                                <input asp-for="HoVaTen" class="form-control" placeholder="Họ và tên" readonly>
+                                <span asp-validation-for="HoVaTen" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="SoDienThoai" class="form-label">Số điện thoại</label>
+                                <input asp-for="SoDienThoai" class="form-control" placeholder="Số điện thoại" required>
+                                <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" type="email" placeholder="Email" readonly>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TenDangNhap" class="form-label">Tên đăng nhập</label>
+                                <input asp-for="TenDangNhap" class="form-control" placeholder="Tên đăng nhập" readonly>
+                                <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TenVaiTro" class="form-label">Vai trò</label>
+                                <input asp-for="TenVaiTro" class="form-control" placeholder="Vai trò" readonly>
+                                <span asp-validation-for="TenVaiTro" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary"><i class="bi bi-chevron-left"></i> Trở về</a>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Lưu thay đổi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed end-0 p-3" style="top: 77px">
+    @if (TempData["SuccessChangeProfileMessage"] != null)
+    {
+        <div id="successChangeProfileToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="1000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @TempData["SuccessChangeProfileMessage"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var successToast = document.getElementById('successChangeProfileToast');
+        if (successToast) {
+            // duration: 1s
+            var toast = new bootstrap.Toast(successToast, { delay: 1000 });
+            toast.show();
+        }
+    });
+</script>

@@ -25,15 +25,15 @@ sidebar.addEventListener("mouseleave", () => {
     }
 });
 
-darkLight.addEventListener("click", () => {
-    body.classList.toggle("dark");
-    if (body.classList.contains("dark")) {
-        document.setI
-        darkLight.classList.replace("bx-sun", "bx-moon");
-    } else {
-        darkLight.classList.replace("bx-moon", "bx-sun");
-    }
-});
+//darkLight.addEventListener("click", () => {
+//    body.classList.toggle("dark");
+//    if (body.classList.contains("dark")) {
+//        document.setI
+//        darkLight.classList.replace("bx-sun", "bx-moon");
+//    } else {
+//        darkLight.classList.replace("bx-moon", "bx-sun");
+//    }
+//});
 
 submenuItems.forEach((item, index) => {
     item.addEventListener("click", () => {

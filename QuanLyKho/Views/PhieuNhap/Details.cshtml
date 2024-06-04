@@ -35,11 +35,17 @@
                                     <td>@Html.DisplayFor(model => model.GhiChu)</td>
                                 <tr>
                                     <th>Trạng thái:</th>
-                                    <td>
-                                        <select asp-for="SelectedTrangThai" asp-items="@Model.TrangThaiList" class="form-select" id="statusDropdown"
-                                                disabled="@(Model.SelectedTrangThai == "Đã nhập kho" || Model.SelectedTrangThai == "Đã hủy")"></select>
-                                    </td>
-                                </tr>
+                                        @if (User.IsInRole("Nhân viên nhập") || User.IsInRole("Quản lý"))
+                                        {
+                                        <td>
+                                            <select asp-for="SelectedTrangThai" asp-items="@Model.TrangThaiList" class="form-select" id="statusDropdown"
+                                                    disabled="@(Model.SelectedTrangThai == "Đã nhập kho" || Model.SelectedTrangThai == "Đã hủy")"></select>
+                                        </td>
+                                        }
+                                        else
+                                        {
+                                        <td>@Html.DisplayFor(model => model.SelectedTrangThai)</td>
+                                        }
                                 </tr>
                             </tbody>
                         </table>
@@ -87,16 +93,19 @@
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="Index" class="btn btn-secondary">Trở về</a>
-                            @if (Model.SelectedTrangThai != "Đã nhập kho" && Model.SelectedTrangThai != "Đã hủy")
+                            <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-chevron-left"></i> Trở về</a>
+                            @if (User.IsInRole("Nhân viên nhập") || User.IsInRole("Quản lý"))
                             {
-                                <button type="submit" class="btn btn-primary" id="saveButton"
-                                @if (Model.SelectedTrangThai == "Chờ nhập kho")
+                                @if (Model.SelectedTrangThai != "Đã nhập kho" && Model.SelectedTrangThai != "Đã hủy")
                                 {
-                                    <text> disabled </text>
-                                }>
-                                        Lưu
+                                    <button type="submit" class="btn btn-primary" id="saveButton"
+                                    @if (Model.SelectedTrangThai == "Chờ nhập kho")
+                                    {
+                                        <text> disabled </text>
+                                    }>
+                                                <i class="bi bi-floppy"></i> Lưu
                                     </button>
+                                }
                             }
                         </div>
                     </form>

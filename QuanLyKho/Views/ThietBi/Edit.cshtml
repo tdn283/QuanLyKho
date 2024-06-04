@@ -18,13 +18,14 @@
                             <div class="col-md-6 mb-3">
                                 <label asp-for="TenThietBi" class="form-label">Tên thiết bị</label>
                                 <input asp-for="TenThietBi" class="form-control" placeholder="Tên thiết bị" required>
-                                <div class="invalid-feedback">
-                                    Vui lòng nhập tên thiết bị.
-                                </div>
+                                <span asp-validation-for="TenThietBi" class="text-danger"></span>
+
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label asp-for="Model" class="form-label">Model</label>
                                 <input asp-for="Model" class="form-control" placeholder="Model">
+                                <span asp-validation-for="Model" class="text-danger"></span>
+
                             </div>
                         </div>
 
@@ -34,18 +35,16 @@
                                 <select class="form-select" asp-for="MaDanhMuc" asp-items="ViewBag.DanhMucList" required>
                                     <option value="">Chọn danh mục</option>
                                 </select>
-                                <div class="invalid-feedback">
-                                    Vui lòng chọn danh mục.
-                                </div>
+                                <span asp-validation-for="MaDanhMuc" class="text-danger"></span>
+
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label asp-for="MaNhaCungCap" class="form-label">Nhà cung cấp</label>
                                 <select class="form-select" asp-for="MaNhaCungCap" asp-items="ViewBag.NhaCungCapList" required>
                                     <option value="">Chọn nhà cung cấp</option>
                                 </select>
-                                <div class="invalid-feedback">
-                                    Vui lòng chọn nhà cung cấp.
-                                </div>
+                                <span asp-validation-for="MaNhaCungCap" class="text-danger"></span>
+
                             </div>
                         </div>
 
@@ -53,27 +52,29 @@
                             <div class="col-md-6 mb-3">
                                 <label asp-for="NhaSanXuat" class="form-label">Hãng sản xuất</label>
                                 <input asp-for="NhaSanXuat" class="form-control" placeholder="Hãng sản xuất">
+                                <span asp-validation-for="NhaSanXuat" class="text-danger"></span>
+
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label asp-for="ThoiGianBaoHanh" class="form-label">Thời gian bảo hành (tháng)</label>
                                 <input asp-for="ThoiGianBaoHanh" type="number" min="0" step="1" class="form-control" placeholder="12">
+                                <span asp-validation-for="ThoiGianBaoHanh" class="text-danger"></span>
+
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="GiaBan" class="form-label">Giá bán</label>
                             <input asp-for="GiaBan" class="form-control" placeholder="Giá bán" required>
-                            <div class="invalid-feedback">
-                                Vui lòng nhập giá bán.
-                            </div>
+                            <span asp-validation-for="GiaBan" class="text-danger"></span>
+
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="SoLuongCon" class="form-label">Số lượng còn lại</label>
                             <input asp-for="SoLuongCon" type="number" min="0" step="1" class="form-control" placeholder="Số lượng còn lại">
-                            <div class="invalid-feedback">
-                                Vui lòng nhập số lượng còn lại.
-                            </div>
+                            <span asp-validation-for="SoLuongCon" class="text-danger"></span>
+
                         </div>
 
                         <div class="mb-3">
@@ -84,8 +85,8 @@
 
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="Index" class="btn btn-secondary">Trở về</a>
-                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                            <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-chevron-left"></i> Trở về</a>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Lưu thay đổi</button>
                         </div>
                     </form>
                 </div>

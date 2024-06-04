@@ -5,76 +5,63 @@
     ViewData["Title"] = "Index";
 }
 
-
 <div>
     <div class="row">
-        <h2>Danh sách nhà cung cấp</h2>
+        <h2 class="mb-3">Danh sách nhà cung cấp</h2>
+
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <form asp-action="Index" class="flex-grow-1 me-3">
-                <div class="row">
-                    <div class="col-md-4">
-                        <input name="searchString" class="form-control" placeholder="Tên nhà cung cấp" value="@ViewData["searchString"]" />
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                        <a asp-action="Index" class="btn btn-secondary">Reset</a>
-                    </div>
+            <form asp-action="Index" class="me-4" style="width: 60%;">
+                <div class="input-group">
+                    <input name="searchString" class="form-control" placeholder="Tên nhà cung cấp" value="@ViewData["searchString"]" />
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Tìm kiếm</button>
+                    <a asp-action="Index" class="btn btn-secondary">Reset</a>
                 </div>
             </form>
-            <a asp-action="Create" class="btn btn-success">Thêm nhà cung cấp</a>
+            @if (User.IsInRole("Quản lý"))
+            {
+            <a asp-action="Create" class="btn btn-outline-primary">
+                <i class="bi bi-plus"></i> Thêm nhà cung cấp
+            </a>
+            }
         </div>
-        <div class="col-12">
-            <table class="table">
-                <thead>
+
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên nhà cung cấp</th>
+                    <th>Địa chỉ</th>
+                    <th>Số điện thoại</th>
+                    <th>Email</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="align-middle">
+                @foreach (var item in Model)
+                {
                     <tr>
-                        <th>
-                            ID
-                        </th>
-                        <th>
-                            Tên nhà cung cấp
-                        </th>
-                        <th>
-                            Địa chỉ
-                        </th>
-                        <th>
-                            Số điện thoại
-                        </th>
-                        <th>
-                            Email
-                        </th>
-                        <th>
-                            Actions
-                        </th>
+                        <td>@item.MaNhaCungCap</td>
+                        <td>@item.TenNhaCungCap</td>
+                        <td>@item.DiaChi</td>
+                        <td>@item.SoDienThoai</td>
+                        <td>@item.Email</td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group" aria-label="Actions">
+                                @if (User.IsInRole("Quản lý"))
+                                {
+                                    <a type="button" class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.MaNhaCungCap">Edit</a>
+                                    <a type="button" class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.MaNhaCungCap">Details</a>
+                                    <a type="button" class="btn btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa nhà cung cấp này không?');" asp-action="Delete" asp-route-id="@item.MaNhaCungCap">Delete</a>
+                                }
+                                else
+                                {
+                                    <a type="button" class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.MaNhaCungCap">Details</a>
+                                }
+                            </div>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td class="align-middle">
-                                @Html.DisplayFor(modelItem => item.MaNhaCungCap)
-                            </td>
-                            <td class="align-middle">
-                                @Html.DisplayFor(modelItem => item.TenNhaCungCap)
-                            </td>
-                            <td class="align-middle">
-                                @Html.DisplayFor(modelItem => item.DiaChi)
-                            </td>
-                            <td class="align-middle">
-                                @Html.DisplayFor(modelItem => item.SoDienThoai)
-                            </td>
-                            <td class="align-middle">
-                                @Html.DisplayFor(modelItem => item.Email)
-                            </td>
-                            <td class="align-middle">
-                                <a type="button" class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.MaNhaCungCap">Edit</a>
-                                <a type="button" class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.MaNhaCungCap">Details</a>
-                                <a type="button" class="btn btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa nhà cung cấp này không?');" asp-action="Delete" asp-route-id="@item.MaNhaCungCap">Delete</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                }
+            </tbody>
+        </table>
     </div>
 </div>

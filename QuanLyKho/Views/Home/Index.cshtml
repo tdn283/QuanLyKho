@@ -1,8 +1,163 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@using QuanLyKho.ViewModels.OtherViewModels
+@using QuanLyKho.ViewModels.PhieuNhapViewModels
+@using QuanLyKho.ViewModels.PhieuXuatViewModels
+@model Tuple<int, int, List<PhieuNhapViewModel>, List<PhieuXuatViewModel>, ChartViewModel, decimal>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@{
+    ViewData["Title"] = "Dashboard";
+
+}
+<style>
+    /* Improved Card Styling */
+    .card {
+        border: none; /* Remove default border */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        transition: transform 0.2s ease; /* Smooth transition on hover */
+    }
+
+        .card:hover {
+            transform: translateY(-3px); /* Elevate card on hover */
+        }
+
+    .card-body {
+        min-height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Distribute space between icon and text */
+        padding: 25px;
+    }
+
+    .card-icon {
+        font-size: 3.5rem;
+        margin-right: 0; /* Remove margin to the right */
+    }
+
+    .card-text-container {
+        text-align: right; /* Align text to the right */
+    }
+
+    .card-text {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px; /* Add some space between text and title */
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: normal;
+    }
+</style>
+
+<div class="row">
+    <a asp-controller="NhanVien" asp-action="Index" class="col-md-4 mb-3 text-decoration-none">
+        <div class="card">
+            <div class="card-body">
+                <i class="bi bi-people card-icon text-primary"></i>
+                <div class="card-text-container">
+                    <p class="card-text">@Model.Item1</p>
+                    <h3 class="card-title">Tổng số nhân viên</h3>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a asp-controller="ThietBi" asp-action="Index" class="col-md-4 mb-3 text-decoration-none">
+        <div class="card">
+            <div class="card-body">
+                <i class="bi bi-pc-display-horizontal card-icon text-success"></i>
+                <div class="card-text-container">
+                    <p class="card-text">@Model.Item2</p>
+                    <h3 class="card-title">Tổng số thiết bị</h3>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <i class="bi bi-currency-dollar card-icon text-warning"></i>
+                <div class="card-text-container">
+                    <p class="card-text">@Model.Item6.ToString("0.00")%</p>
+                    <h3 class="card-title">Phần trăm lợi nhuận</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h2>Doanh thu & chi tiêu theo tháng</h2>
+            </div>
+            <div class="card-body">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="toast-container position-fixed end-0 p-3" style="top: 77px">
+    @if (TempData["SuccessChangePasswordMessage"] != null)
+    {
+        <div id="successChangePasswordToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="1000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @TempData["SuccessChangePasswordMessage"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var successToast = document.getElementById('successChangePasswordToast');
+            if (successToast) {
+                // duration: 1s
+                var toast = new bootstrap.Toast(successToast, { delay: 1000 });
+                toast.show();
+            }
+        });
+    </script>
+    <script>
+        var ctx = document.getElementById('monthlyChart').getContext('2d');
+
+        var chartData = {
+            labels: @Html.Raw(Json.Serialize(Model.Item5.Labels)),
+            datasets: [
+                {
+                    label: 'Doanh thu',
+                    data: @Html.Raw(Json.Serialize(Model.Item5.ExpenseData)),
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Chi tiêu',
+                    data: @Html.Raw(Json.Serialize(Model.Item5.IncomeData)),
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }
+            ]
+        };
+
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}

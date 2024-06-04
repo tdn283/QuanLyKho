@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using QuanLyKho.Models;
 using QuanLyKho.ViewModels.AccountViewModels;
+using QuanLyKho.Data.Interface;
 
 namespace QuanLyKho.Controllers
 {
@@ -39,7 +40,7 @@ namespace QuanLyKho.Controllers
             // check password no BCrypt
             if (taiKhoan == null || loginVM.MatKhau != taiKhoan.MatKhau)
             {
-                ModelState.AddModelError("Email", "Email hoặc mật khẩu không đúng");
+                ModelState.AddModelError("MatKhau", "Sai mật khẩu.");
                 return View();
             }
 

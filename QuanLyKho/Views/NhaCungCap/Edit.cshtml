@@ -17,39 +17,31 @@
                         <div class="mb-3">
                             <label asp-for="TenNhaCungCap" class="form-label">Tên nhà cung cấp</label>
                             <input asp-for="TenNhaCungCap" class="form-control" placeholder="Tên nhà cung cấp" required>
-                            <div class="invalid-feedback">
-                                Vui lòng nhập tên nhà cung cấp.
-                            </div>
+                            <span asp-validation-for="TenNhaCungCap" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="DiaChi" class="form-label">Địa chỉ</label>
                             <input asp-for="DiaChi" class="form-control" placeholder="Địa chỉ" required>
-                            <div class="invalid-feedback">
-                                Vui lòng nhập địa chỉ.
-                            </div>
+                            <span asp-validation-for="DiaChi" class="text-danger"></span>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label asp-for="SoDienThoai" class="form-label">Số điện thoại</label>
                                 <input asp-for="SoDienThoai" class="form-control" placeholder="Số điện thoại" required>
-                                <div class="invalid-feedback">
-                                    Vui lòng nhập số điện thoại.
-                                </div>
+                                <span asp-validation-for="SoDienThoai" class="text-danger"></span>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label asp-for="Email" class="form-label">Email</label>
                                 <input asp-for="Email" class="form-control" type="email" placeholder="Email" required>
-                                <div class="invalid-feedback">
-                                    Vui lòng nhập email hợp lệ.
-                                </div>
+                                <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="Index" class="btn btn-secondary">Trở về</a>
-                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                            <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-chevron-left"></i> Trở về</a>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Lưu thay đổi</button>
                         </div>
                     </form>
                 </div>

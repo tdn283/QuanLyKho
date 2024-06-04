@@ -20,8 +20,16 @@ namespace QuanLyKho.Controllers
             _context = context;
             _thietBiService = thietBiService;
         }
-        public async Task<IActionResult> Index(string searchString = null)
+        public async Task<IActionResult> Index(string searchString = null, string danhMucFilter = null)
         {
+            var danhMucList = _context.DanhMucThietBis.Select(dm => new SelectListItem
+            {
+                Value = dm.MaDanhMuc,
+                Text = dm.TenDanhMuc,
+                Selected = dm.MaDanhMuc == danhMucFilter
+            }).ToList();
+            ViewBag.DanhMucList = danhMucList;
+
             searchString = string.IsNullOrEmpty(searchString) ? "" : searchString.ToLower();
 
             var listThietBi = await _thietBiService.GetAllThietBiAsync();
@@ -51,7 +59,8 @@ namespace QuanLyKho.Controllers
                     };
                 })
                 .Where(tb =>
-                    string.IsNullOrEmpty(searchString) || tb.TenThietBi.ToLower().Contains(searchString)
+                    (string.IsNullOrEmpty(searchString) || tb.TenThietBi.ToLower().Contains(searchString)) &&
+                    (danhMucFilter == null || tb.MaDanhMuc == danhMucFilter)
                     )
                 .ToList();
             return View(thietBiVM);

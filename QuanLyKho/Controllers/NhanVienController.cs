@@ -7,6 +7,7 @@ using QuanLyKho.Helper;
 using QuanLyKho.Models;
 using QuanLyKho.ViewModels.NhanVienViewModels;
 using System.Globalization;
+using System.Security.Claims;
 
 namespace QuanLyKho.Controllers
 {
@@ -164,7 +165,6 @@ namespace QuanLyKho.Controllers
             {
                 MaNguoiDung = nhanVien.MaNguoiDung,
                 TenDangNhap = nhanVien.TenDangNhap,
-                MatKhau = nhanVien.MatKhau,
                 Email = nhanVien.Email,
                 SoDienThoai = nhanVien.SoDienThoai,
                 HoVaTen = nhanVien.HoVaTen,
@@ -213,7 +213,6 @@ namespace QuanLyKho.Controllers
                 {
                     nhanVien.MaNguoiDung = id;
                     nhanVien.TenDangNhap = nhanVienEditVM.TenDangNhap;
-                    nhanVien.MatKhau = nhanVienEditVM.MatKhau;
                     nhanVien.Email = nhanVienEditVM.Email;
                     nhanVien.SoDienThoai = nhanVienEditVM.SoDienThoai;
                     nhanVien.HoVaTen = nhanVienEditVM.HoVaTen;
@@ -237,6 +236,116 @@ namespace QuanLyKho.Controllers
 
             await _nhanVienService.DeleteNhanvienAsync(id);
             return RedirectToAction("Index");
+        }
+
+        // GET: NhanVien/ChangePassword/5
+        public async Task<IActionResult> ChangePassword(string id)
+        {
+            var nhanVien = await _nhanVienService.GetNhanvienByIdAsync(id);
+            if (nhanVien == null)
+            {
+                return NotFound();
+            }
+
+            var changePasswordVM = new ChangePasswordViewModel
+            {
+                MatKhau = "",
+                MatKhauMoi = "",
+                XacNhanMatKhau = ""
+            };
+
+            return View(changePasswordVM);
+        }
+
+        // POST: NhanVien/ChangePassword/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(string id, ChangePasswordViewModel changePasswordVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var nhanVien = await _nhanVienService.GetNhanvienByIdAsync(id);
+                if (nhanVien == null)
+                {
+                    return NotFound();
+                }
+
+                if (changePasswordVM.MatKhau != nhanVien.MatKhau)
+                {
+                    ModelState.AddModelError("MatKhau", "Mật khẩu không đúng");
+                    return View(changePasswordVM);
+                }
+                if (changePasswordVM.MatKhauMoi != changePasswordVM.XacNhanMatKhau)
+                {
+                    ModelState.AddModelError("XacNhanMatKhau", "Xác nhận mật khẩu không đúng");
+                    return View(changePasswordVM);
+                }
+                else
+                {
+                    nhanVien.MatKhau = changePasswordVM.MatKhauMoi;
+                    await _nhanVienService.UpdateNhanvienAsync(id, nhanVien);
+                    TempData["SuccessChangePasswordMessage"] = "Mật khẩu đã được thay đổi thành công.";
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            return View(changePasswordVM);
+        }
+
+        // GET: NhanVien/Profile
+        public async Task<IActionResult> ChangeProfile(string id)
+        {
+            var nhanVien = await _nhanVienService.GetNhanvienByIdAsync(id);
+            if (nhanVien == null)
+            {
+                return NotFound();
+            }
+
+            var vaiTro = await _context.VaiTros.FirstOrDefaultAsync(vt => vt.MaVaiTro == nhanVien.MaVaiTro);
+
+            var nhanVienVM = new NhanVienProfileViewModel
+            {
+                MaNguoiDung = nhanVien.MaNguoiDung,
+                HoVaTen = nhanVien.HoVaTen,
+                SoDienThoai = nhanVien.SoDienThoai,
+                TenDangNhap = nhanVien.TenDangNhap,
+                Email = nhanVien.Email,
+                MaVaiTro = nhanVien.MaVaiTro,
+                TenVaiTro = vaiTro?.TenVaiTro ?? ""
+            };
+
+            return View(nhanVienVM);
+        }
+
+        // POST: NhanVien/Profile
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeProfile(string id, NhanVienProfileViewModel nhanVienProfileVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var nhanVien = await _nhanVienService.GetNhanvienByIdAsync(id);
+                if (nhanVien == null)
+                {
+                    return NotFound();
+                }
+
+                if (_context.TaiKhoans.Any(tk => tk.SoDienThoai == nhanVienProfileVM.SoDienThoai && tk.MaNguoiDung != id))
+                {
+                    ModelState.AddModelError("SoDienThoai", "Số điện thoại đã tồn tại.");
+                }
+                else
+                {
+                    nhanVien.TenDangNhap = nhanVienProfileVM.TenDangNhap;
+                    nhanVien.Email = nhanVienProfileVM.Email;
+                    nhanVien.SoDienThoai = nhanVienProfileVM.SoDienThoai;
+                    nhanVien.HoVaTen = nhanVienProfileVM.HoVaTen;
+
+                    await _nhanVienService.UpdateNhanvienAsync(id, nhanVien);
+                    TempData["SuccessChangeProfileMessage"] = "Thông tin cá nhân đã được cập nhật thành công.";
+                    return RedirectToAction("ChangeProfile", new { id = id });
+                }
+            }
+            return View(nhanVienProfileVM);
         }
     }
 }

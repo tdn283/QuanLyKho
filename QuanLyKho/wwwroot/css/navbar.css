@@ -16,7 +16,7 @@
 }
 
 body {
-    background-color: #fff;
+    background-color: #fcfcfc;
     transition: all 0.5s ease;
 }
 
@@ -56,7 +56,6 @@ body {
 
 .navbar img {
     width: 35px;
-    height: 35px;
     border-radius: 50%;
 }
 
@@ -88,6 +87,53 @@ body {
         cursor: pointer;
         font-size: 20px;
         color: var(--grey-color);
+    }
+
+/* Modern Dropdown Styling */
+.user_info_button {
+    padding: 0; /* Remove default button padding */
+    border: none; /* Remove default button border */
+    background-color: transparent; /* Make background transparent */
+    text-decoration: none; /* Remove underline */
+    color: inherit; /* Inherit color from parent */
+}
+
+.user_avatar {
+    width: 30px; /* Adjust avatar size as needed */
+    height: 30px;
+    object-fit: cover; /* Ensure avatar image fits nicely */
+    margin-right: 10px;
+}
+
+.user_name {
+    font-weight: 500; /* Slightly bolder font */
+}
+
+.user_dropdown_menu {
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    right: 0; /* Align to the right edge of the parent */
+    top: 100%; /* Position below the dropdown toggle */
+    margin-top: 10px; /* Add extra space for visual separation (adjust as needed) */
+}
+
+.dropdown-item { /* Style dropdown items (optional) */
+    padding: 10px 15px; /* Adjust padding */
+}
+
+.user_info_toggle {
+    padding: 0; /* Remove padding */
+    border: none; /* Remove border */
+    background-color: transparent; /* Make background transparent */
+    text-decoration: none; /* Remove underline */
+    color: inherit; /* Inherit color from parent */
+    cursor: pointer; /* Add pointer cursor on hover */
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Align items vertically */
+}
+
+    .user_info_toggle:focus {
+        outline: none; /* Remove focus outline */
     }
 /* sidebar */
 .sidebar {
@@ -133,11 +179,11 @@ body {
 }
 
 .menu_dashboard::before {
-    content: "Quản lý";
+    content: "Trang chủ";
 }
 
-.menu_editor::before {
-    content: "Editor";
+.menu_management::before {
+    content: "Quản lý";
 }
 
 .menu_setting::before {
