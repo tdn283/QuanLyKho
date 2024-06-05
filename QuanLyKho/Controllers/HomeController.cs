@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyKho.ViewModels.PhieuNhapViewModels;
 using QuanLyKho.ViewModels.PhieuXuatViewModels;
 using QuanLyKho.ViewModels.OtherViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly QuanlykhoContext _context;
