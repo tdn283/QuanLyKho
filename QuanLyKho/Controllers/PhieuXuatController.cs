@@ -7,6 +7,7 @@ using QuanLyKho.Data.Interface;
 using QuanLyKho.Data.Service;
 using QuanLyKho.Helper;
 using QuanLyKho.Models;
+using QuanLyKho.ViewModels.OtherViewModels;
 using QuanLyKho.ViewModels.PhieuNhapViewModels;
 using QuanLyKho.ViewModels.PhieuXuatViewModels;
 using System.Text;
@@ -23,11 +24,12 @@ namespace QuanLyKho.Controllers
             _phieuXuatService = phieuXuatService;
         }
 
-        public async Task<IActionResult> Index(string? searchString = null, string? trangThaiFilter = null)
+        public async Task<IActionResult> Index(string? searchString = null, string? trangThaiFilter = null, int pageNumber = 1, int pageSize = 10)
         {
             var phieuXuatList = await _phieuXuatService.GetAllPhieuXuatAsync();
             var nguoiDungList = await _context.TaiKhoans.ToListAsync();
 
+            // Viewbag
             var trangThaiList = phieuXuatList.Select(pn => pn.TrangThai).Distinct().Select(trangThai => new SelectListItem
             {
                 Value = trangThai,
@@ -55,11 +57,30 @@ namespace QuanLyKho.Controllers
                     };
                 })
                 .Where(px =>
-                    (string.IsNullOrEmpty(searchString) || px.MaPhieuXuat.ToLower().Contains(searchString)) &&
-                    (trangThaiFilter == null || px.TrangThai == trangThaiFilter)
+                    (string.IsNullOrEmpty(searchString) || px.MaPhieuXuat.ToLower().Contains(searchString)) && // Search by MaPhieuXuat
+                    (trangThaiFilter == null || px.TrangThai == trangThaiFilter) // Filter by TrangThai
                     )
                     .ToList();
-            return View(phieuXuatVM);
+
+            // Pagination
+            int totalItems = phieuXuatVM.Count;
+            var pagedPhieuXuatVM = phieuXuatVM.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            var phieuXuatIndexVM = new PhieuXuatIndexViewModel
+            {
+                PhieuXuats = pagedPhieuXuatVM,
+                PaginationInfo = new PaginationInfo
+                {
+                    CurrentPage = pageNumber,
+                    ItemsPerPage = pageSize,
+                    TotalItems = totalItems
+                }
+            };
+
+            ViewData["searchString"] = searchString; // Keep the search string after reloading the page
+            ViewData["trangThaiFilter"] = trangThaiFilter; // Keep the filter after reloading the page
+
+            return View(phieuXuatIndexVM);
         }
 
         // GET: PhieuXuat/Create

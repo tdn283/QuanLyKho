@@ -17,6 +17,7 @@ namespace QuanLyKho.ViewModels.NhanVienViewModels
         public string HoVaTen { get; set; }
         [Display(Name = "Email")]
         [Required(ErrorMessage = "Email không được để trống")]
+        [EmailAddress(ErrorMessage = "Email không hợp lệ")]
         public string Email { get; set; }
         [Display(Name = "Số điện thoại")]
         [Required(ErrorMessage = "Số điện thoại không được để trống")]

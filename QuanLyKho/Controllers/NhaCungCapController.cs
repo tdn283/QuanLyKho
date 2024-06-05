@@ -4,6 +4,8 @@ using QuanLyKho.Data.Interface;
 using QuanLyKho.Helper;
 using QuanLyKho.Models;
 using QuanLyKho.ViewModels.NhaCungCapViewModel;
+using QuanLyKho.ViewModels.NhanVienViewModels;
+using QuanLyKho.ViewModels.OtherViewModels;
 
 namespace QuanLyKho.Controllers
 {
@@ -18,7 +20,7 @@ namespace QuanLyKho.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string searchString = "")
+        public async Task<IActionResult> Index(string searchString = "", int pageNumber = 1, int pageSize = 10)
         {
             searchString = string.IsNullOrEmpty(searchString) ? "" : searchString.ToLower();
 
@@ -34,13 +36,28 @@ namespace QuanLyKho.Controllers
                     Email = ncc.Email
                 })
                 .Where(ncc =>
-                    string.IsNullOrEmpty(searchString) || ncc.TenNhaCungCap.ToLower().Contains(searchString)
+                    string.IsNullOrEmpty(searchString) || ncc.TenNhaCungCap.ToLower().Contains(searchString) // Search by TenNhaCungCap
                     )
                 .ToList();
 
+            // Pagination
+            int totalItems = nhaCungCapVM.Count;
+            var pagedNhaCungCapVM = nhaCungCapVM.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            var nhaCungCapIndexVM = new NhaCungCapIndexViewModel
+            {
+                NhaCungCaps = pagedNhaCungCapVM,
+                PaginationInfo = new PaginationInfo
+                {
+                    CurrentPage = pageNumber,
+                    ItemsPerPage = pageSize,
+                    TotalItems = totalItems
+                }
+            };
+
             ViewData["searchString"] = searchString;
 
-            return View(nhaCungCapVM);
+            return View(nhaCungCapIndexVM);
         }
 
         // GET: NhaCungCap/Details/5

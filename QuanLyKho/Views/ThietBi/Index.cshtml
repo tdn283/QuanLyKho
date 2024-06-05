@@ -1,5 +1,5 @@
 ﻿@using QuanLyKho.ViewModels.ThietBiViewModels
-@model IEnumerable<ThietBiViewModel>
+@model ThietBiIndexViewModel
 @{
     ViewData["Title"] = "Index";
 }
@@ -42,7 +42,7 @@
                     </tr>
                 </thead>
                 <tbody class="align-middle">
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.ThietBis)
                     {
                         <tr>
                             <td>@item.MaThietBi</td>
@@ -70,6 +70,28 @@
                     }
                 </tbody>
             </table>
+            <div class="d-flex justify-content-center">
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item @(Model.PaginationInfo.CurrentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-searchString="@ViewData["searchString"]" asp-route-danhMucFilter="@ViewData["danhMucFilter"]" asp-route-pageNumber="@(Model.PaginationInfo.CurrentPage - 1)" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        @for (int i = 1; i <= Model.PaginationInfo.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.PaginationInfo.CurrentPage ? "active" : "")">
+                                <a class="page-link" asp-action="Index" asp-route-searchString="@ViewData["searchString"]" asp-route-danhMucFilter="@ViewData["danhMucFilter"]" asp-route-pageNumber="@i">@i</a>
+                            </li>
+                        }
+                        <li class="page-item @(Model.PaginationInfo.CurrentPage == Model.PaginationInfo.TotalPages ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-searchString="@ViewData["searchString"]" asp-route-danhMucFilter="@ViewData["danhMucFilter"]" asp-route-pageNumber="@(Model.PaginationInfo.CurrentPage + 1)" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 </div>

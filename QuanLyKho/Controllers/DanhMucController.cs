@@ -6,6 +6,8 @@ using QuanLyKho.Data.Service;
 using QuanLyKho.Helper;
 using QuanLyKho.Models;
 using QuanLyKho.ViewModels.DanhMucViewModels;
+using QuanLyKho.ViewModels.OtherViewModels;
+using QuanLyKho.ViewModels.PhieuNhapViewModels;
 using System.Net.WebSockets;
 
 namespace QuanLyKho.Controllers
@@ -20,15 +22,15 @@ namespace QuanLyKho.Controllers
             _context = context;
             _danhMucService = danhMucService;
         }
-        public async Task<IActionResult> Index(string? danhMucFilter)
+        public async Task<IActionResult> Index(string? danhMucFilter, int pageNumber = 1, int pageSize = 10)
         {
+            // Viewbag
             var danhMucList = _context.DanhMucThietBis.Select(dm => new SelectListItem
             {
                 Value = dm.MaDanhMuc,
                 Text = dm.TenDanhMuc,
                 Selected = dm.MaDanhMuc == danhMucFilter
             }).ToList();
-
             ViewBag.DanhMucList = danhMucList;
 
             var listDanhMuc = await _danhMucService.GetAllDanhMucAsync();
@@ -43,9 +45,27 @@ namespace QuanLyKho.Controllers
                     };
                 })
                 .Where(dm =>
-                (danhMucFilter == null || dm.MaDanhMuc == danhMucFilter)
+                (danhMucFilter == null || dm.MaDanhMuc == danhMucFilter) // Filter by MaDanhMuc
                 ).ToList();
-            return View(danhMucVM);
+
+            // Pagination
+            int totalItems = danhMucVM.Count;
+            var pagedDanhMucVM = danhMucVM.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            var danhMucIndexVM = new DanhMucIndexViewModel
+            {
+                DanhMucs = pagedDanhMucVM,
+                PaginationInfo = new PaginationInfo
+                {
+                    CurrentPage = pageNumber,
+                    ItemsPerPage = pageSize,
+                    TotalItems = totalItems
+                }
+            };
+
+            ViewData["danhMucFilter"] = danhMucFilter; // Keep the filter after reloading the page
+
+            return View(danhMucIndexVM);
         }
 
         // GET: DanhMuc/Create

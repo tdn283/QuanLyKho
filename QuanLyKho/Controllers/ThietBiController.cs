@@ -6,6 +6,8 @@ using QuanLyKho.Data.Enums;
 using QuanLyKho.Data.Interface;
 using QuanLyKho.Helper;
 using QuanLyKho.Models;
+using QuanLyKho.ViewModels.OtherViewModels;
+using QuanLyKho.ViewModels.PhieuNhapViewModels;
 using QuanLyKho.ViewModels.ThietBiViewModels;
 
 namespace QuanLyKho.Controllers
@@ -20,8 +22,9 @@ namespace QuanLyKho.Controllers
             _context = context;
             _thietBiService = thietBiService;
         }
-        public async Task<IActionResult> Index(string searchString = null, string danhMucFilter = null)
+        public async Task<IActionResult> Index(string searchString = null, string danhMucFilter = null, int pageNumber = 1, int pageSize = 10)
         {
+            // Viewbag
             var danhMucList = _context.DanhMucThietBis.Select(dm => new SelectListItem
             {
                 Value = dm.MaDanhMuc,
@@ -59,11 +62,30 @@ namespace QuanLyKho.Controllers
                     };
                 })
                 .Where(tb =>
-                    (string.IsNullOrEmpty(searchString) || tb.TenThietBi.ToLower().Contains(searchString)) &&
-                    (danhMucFilter == null || tb.MaDanhMuc == danhMucFilter)
+                    (string.IsNullOrEmpty(searchString) || tb.TenThietBi.ToLower().Contains(searchString)) && // Search by TenThietBi
+                    (danhMucFilter == null || tb.MaDanhMuc == danhMucFilter) // Filter by MaDanhMuc
                     )
                 .ToList();
-            return View(thietBiVM);
+
+            // Pagination
+            int totalItems = thietBiVM.Count;
+            var pagedThietBiVM = thietBiVM.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            var thietBiIndexVM = new ThietBiIndexViewModel
+            {
+                ThietBis = pagedThietBiVM,
+                PaginationInfo = new PaginationInfo
+                {
+                    CurrentPage = pageNumber,
+                    ItemsPerPage = pageSize,
+                    TotalItems = totalItems
+                }
+            };
+
+            ViewData["searchString"] = searchString; // Keep the search string after reloading the page
+            ViewData["danhMucFilter"] = danhMucFilter; // Keep the filter after reloading the page
+
+            return View(thietBiIndexVM);
         }
 
         // GET: ThietBi/Details/5

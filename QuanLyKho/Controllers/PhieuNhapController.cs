@@ -7,6 +7,8 @@ using QuanLyKho.Data.Interface;
 using QuanLyKho.Data.Service;
 using QuanLyKho.Helper;
 using QuanLyKho.Models;
+using QuanLyKho.ViewModels.NhaCungCapViewModel;
+using QuanLyKho.ViewModels.OtherViewModels;
 using QuanLyKho.ViewModels.PhieuNhapViewModels;
 using System.Text;
 
@@ -21,11 +23,14 @@ namespace QuanLyKho.Controllers
             _context = context;
             _phieuNhapService = phieuNhapService;
         }
-        public async Task<IActionResult> Index(string? searchString = null, string? trangThaiFilter = null)
+        public async Task<IActionResult> Index(string? searchString = null, string? trangThaiFilter = null, int pageNumber = 1, int pageSize = 10)
         {
+            searchString = string.IsNullOrEmpty(searchString) ? "" : searchString.ToLower();
+
             var phieuNhapList = await _phieuNhapService.GetAllPhieuNhapAsync();
             var nguoiDungList = await _context.TaiKhoans.ToListAsync();
 
+            // Viewbag
             var trangThaiList = phieuNhapList.Select(pn => pn.TrangThai).Distinct().Select(trangThai => new SelectListItem
             {
                 Value = trangThai,
@@ -34,7 +39,6 @@ namespace QuanLyKho.Controllers
             }).ToList();
             ViewBag.TrangThaiList = trangThaiList;
 
-            searchString = string.IsNullOrEmpty(searchString) ? "" : searchString.ToLower();
 
             var phieuNhapVM = phieuNhapList
                 .Select(pn =>
@@ -52,11 +56,30 @@ namespace QuanLyKho.Controllers
                     };
                 })
                 .Where(pn =>
-                    (string.IsNullOrEmpty(searchString) || pn.MaPhieuNhap.ToLower().Contains(searchString)) &&
-                    (trangThaiFilter == null || pn.TrangThai == trangThaiFilter)
+                    (string.IsNullOrEmpty(searchString) || pn.MaPhieuNhap.ToLower().Contains(searchString)) && // Search by MaPhieuNhap
+                    (trangThaiFilter == null || pn.TrangThai == trangThaiFilter) // Filter by TrangThai
                     )
                     .ToList();
-            return View(phieuNhapVM);
+
+            // Pagination
+            int totalItems = phieuNhapVM.Count;
+            var pagedPhieuNhapVM = phieuNhapVM.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            var phieuNhapIndexVM = new PhieuNhapIndexViewModel
+            {
+                PhieuNhaps = pagedPhieuNhapVM,
+                PaginationInfo = new PaginationInfo
+                {
+                    CurrentPage = pageNumber,
+                    ItemsPerPage = pageSize,
+                    TotalItems = totalItems
+                }
+            };
+
+            ViewData["searchString"] = searchString; // Keep the search string after reloading the page
+            ViewData["trangThaiFilter"] = trangThaiFilter; // Keep the filter after reloading the page
+
+            return View(phieuNhapIndexVM);
         }
 
         // GET: PhieuNhap/Create

@@ -6,6 +6,7 @@ using QuanLyKho.Data.Interface;
 using QuanLyKho.Helper;
 using QuanLyKho.Models;
 using QuanLyKho.ViewModels.NhanVienViewModels;
+using QuanLyKho.ViewModels.OtherViewModels;
 using System.Globalization;
 using System.Security.Claims;
 
@@ -21,16 +22,15 @@ namespace QuanLyKho.Controllers
             _context = context;
             _nhanVienService = nhanVienService;
         }
-        public async Task<IActionResult> Index(string searchString = "", string? vaiTroFilter = null)
+        public async Task<IActionResult> Index(string searchString = "", string? vaiTroFilter = null, int pageNumber = 1, int pageSize = 10)
         {
-
+            // ViewBag
             var vaiTroList = _context.VaiTros.Select(lsh => new SelectListItem
             {
                 Value = lsh.MaVaiTro.ToString(),
                 Text = lsh.TenVaiTro,
                 Selected = lsh.MaVaiTro == vaiTroFilter
             }).ToList();
-
             ViewBag.VaiTroList = vaiTroList;
 
             searchString = string.IsNullOrEmpty(searchString) ? "" : searchString.ToLower();
@@ -52,14 +52,30 @@ namespace QuanLyKho.Controllers
                     };
                 })
                 .Where(nv =>
-                    (string.IsNullOrEmpty(searchString) || nv.HoVaTen.ToLower().Contains(searchString)) &&
-                    (vaiTroFilter == null || nv.MaVaiTro == vaiTroFilter)
+                    (string.IsNullOrEmpty(searchString) || nv.HoVaTen.ToLower().Contains(searchString)) && // Search by HoVaTen
+                    (vaiTroFilter == null || nv.MaVaiTro == vaiTroFilter) // Filter by MaVaiTro
                     )
                     .ToList();
 
-            ViewData["searchString"] = searchString;
+            // Pagination
+            int totalItems = nhanVienVM.Count;
+            var pagedNhanVienVM = nhanVienVM.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-            return View(nhanVienVM);
+            var nhanVienIndexVM = new NhanVienIndexViewModel
+            {
+                NhanViens = pagedNhanVienVM,
+                PaginationInfo = new PaginationInfo
+                {
+                    CurrentPage = pageNumber,
+                    ItemsPerPage = pageSize,
+                    TotalItems = totalItems
+                }
+            };
+
+            ViewData["searchString"] = searchString; // Keep search string after search
+            ViewData["vaiTroFilter"] = vaiTroFilter; // Keep vaiTroFilter after filter
+
+            return View(nhanVienIndexVM);
         }
 
         // GET: NhanVien/Details/5
@@ -119,7 +135,7 @@ namespace QuanLyKho.Controllers
                 }
                 if (_context.TaiKhoans.Any(tk => tk.TenDangNhap == nhanVienCreateVM.TenDangNhap))
                 {
-                    ModelState.AddModelError("Cccd", "Tên đăng nhập đã tồn tại");
+                    ModelState.AddModelError("TenDangNhap", "Tên đăng nhập đã tồn tại");
                     return View(nhanVienCreateVM);
                 }
                 if (_context.TaiKhoans.Any(tk => tk.SoDienThoai == nhanVienCreateVM.SoDienThoai))
