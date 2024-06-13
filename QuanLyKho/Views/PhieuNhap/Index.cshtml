@@ -15,6 +15,13 @@
                     <select name="trangThaiFilter" class="form-select" asp-items="@ViewBag.TrangThaiList" aria-label="Trạng thái">
                         <option value="">Tất cả trạng thái</option>
                     </select>
+                    <select name="sortBy" class="form-select" aria-label="Sắp xếp theo">
+                        <option value="ngayNhap_desc" selected="@(ViewData["sortBy"] == null)">Mặc định</option>
+                        <option value="ngayNhap_desc" selected="@(ViewData["sortBy"]?.ToString() == "ngayNhap_desc")">Ngày nhập mới nhất</option>
+                        <option value="ngayNhap_asc" selected="@(ViewData["sortBy"]?.ToString() == "ngayNhap_as")">Ngày nhập muộn nhất</option>
+                        <option value="tongTien_asc" selected="@(ViewData["sortBy"]?.ToString() == "tongTien_asc")">Tổng tiền tăng dần</option>
+                        <option value="tongTien_desc" selected="@(ViewData["sortBy"]?.ToString() == "tongTien_desc")">Tổng tiền giảm dần</option>
+                    </select>
                     <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Tìm kiếm</button>
                     <a asp-action="Index" class="btn btn-secondary">Reset</a>
                 </div>
@@ -28,7 +35,7 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover table-striped">
+            <table class="table table-hover table-striped table-bordered">
                 <thead>
                     <tr>
                         <th>Mã phiếu nhập</th>
@@ -71,18 +78,18 @@
                 <nav>
                     <ul class="pagination">
                         <li class="page-item @(Model.PaginationInfo.CurrentPage == 1 ? "disabled" : "")">
-                            <a class="page-link" asp-action="Index" asp-route-searchString="@ViewData["searchString"]" asp-route-trangThaiFilter="@ViewData["trangThaiFilter"]" asp-route-pageNumber="@(Model.PaginationInfo.CurrentPage - 1)" aria-label="Previous">
+                            <a class="page-link" asp-action="Index" asp-route-searchString="@ViewData["searchString"]" asp-route-trangThaiFilter="@ViewData["trangThaiFilter"]" asp-route-sortBy="@ViewData["sortBy"]" asp-route-pageNumber="@(Model.PaginationInfo.CurrentPage - 1)" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         @for (int i = 1; i <= Model.PaginationInfo.TotalPages; i++)
                         {
                             <li class="page-item @(i == Model.PaginationInfo.CurrentPage ? "active" : "")">
-                                <a class="page-link" asp-action="Index" asp-route-searchString="@ViewData["searchString"]" asp-route-trangThaiFilter="@ViewData["trangThaiFilter"]" asp-route-pageNumber="@i">@i</a>
+                                <a class="page-link" asp-action="Index" asp-route-searchString="@ViewData["searchString"]" asp-route-trangThaiFilter="@ViewData["trangThaiFilter"]" asp-route-sortBy="@ViewData["sortBy"]" asp-route-pageNumber="@i">@i</a>
                             </li>
                         }
                         <li class="page-item @(Model.PaginationInfo.CurrentPage == Model.PaginationInfo.TotalPages ? "disabled" : "")">
-                            <a class="page-link" asp-action="Index" asp-route-searchString="@ViewData["searchString"]" asp-route-trangThaiFilter="@ViewData["trangThaiFilter"]" asp-route-pageNumber="@(Model.PaginationInfo.CurrentPage + 1)" aria-label="Next">
+                            <a class="page-link" asp-action="Index" asp-route-searchString="@ViewData["searchString"]" asp-route-trangThaiFilter="@ViewData["trangThaiFilter"]" asp-route-sortBy="@ViewData["sortBy"]" asp-route-pageNumber="@(Model.PaginationInfo.CurrentPage + 1)" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>

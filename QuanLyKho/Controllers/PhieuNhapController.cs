@@ -11,6 +11,7 @@ using QuanLyKho.Models;
 using QuanLyKho.ViewModels.NhaCungCapViewModel;
 using QuanLyKho.ViewModels.OtherViewModels;
 using QuanLyKho.ViewModels.PhieuNhapViewModels;
+using System.Globalization;
 using System.Text;
 
 namespace QuanLyKho.Controllers
@@ -25,7 +26,7 @@ namespace QuanLyKho.Controllers
             _context = context;
             _phieuNhapService = phieuNhapService;
         }
-        public async Task<IActionResult> Index(string? searchString = null, string? trangThaiFilter = null, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string? searchString = null, string? trangThaiFilter = null, string? sortBy = null, int pageNumber = 1, int pageSize = 10)
         {
             searchString = string.IsNullOrEmpty(searchString) ? "" : searchString.ToLower();
 
@@ -40,7 +41,6 @@ namespace QuanLyKho.Controllers
                 Selected = trangThai == trangThaiFilter
             }).ToList();
             ViewBag.TrangThaiList = trangThaiList;
-
 
             var phieuNhapVM = phieuNhapList
                 .Select(pn =>
@@ -61,7 +61,18 @@ namespace QuanLyKho.Controllers
                     (string.IsNullOrEmpty(searchString) || pn.MaPhieuNhap.ToLower().Contains(searchString)) && // Search by MaPhieuNhap
                     (trangThaiFilter == null || pn.TrangThai == trangThaiFilter) // Filter by TrangThai
                     )
-                    .ToList();
+                //.OrderByDescending(pn => DateTime.ParseExact(pn.NgayNhap, "dd-MM-yyyy", CultureInfo.InvariantCulture))
+                .ToList();
+
+            // Sort
+            phieuNhapVM = sortBy switch
+            {
+                "ngayNhap_asc" => phieuNhapVM.OrderBy(pn => DateTime.ParseExact(pn.NgayNhap, "dd-MM-yyyy", CultureInfo.InvariantCulture)).ToList(),
+                "ngayNhap_desc" => phieuNhapVM.OrderByDescending(pn => DateTime.ParseExact(pn.NgayNhap, "dd-MM-yyyy", CultureInfo.InvariantCulture)).ToList(),
+                "tongTien_asc" => phieuNhapVM.OrderBy(pn => pn.TongTien).ToList(),
+                "tongTien_desc" => phieuNhapVM.OrderByDescending(pn => pn.TongTien).ToList(),
+                _ => phieuNhapVM
+            };  
 
             // Pagination
             int totalItems = phieuNhapVM.Count;
@@ -80,6 +91,7 @@ namespace QuanLyKho.Controllers
 
             ViewData["searchString"] = searchString; // Keep the search string after reloading the page
             ViewData["trangThaiFilter"] = trangThaiFilter; // Keep the filter after reloading the page
+            ViewData["sortBy"] = sortBy; // Keep the sort by after reloading the page
 
             return View(phieuNhapIndexVM);
         }
@@ -134,7 +146,7 @@ namespace QuanLyKho.Controllers
                     phieuNhap.MaNguoiDung = phieuNhapCreateVM.MaNguoiDung;
                     phieuNhap.NgayNhap = DateTime.Now;
                     phieuNhap.TongTien = phieuNhapCreateVM.TongTien;
-                    phieuNhap.GhiChu = phieuNhapCreateVM.GhiChu?.Normalize(NormalizationForm.FormC);
+                    phieuNhap.GhiChu = phieuNhapCreateVM.GhiChu;
                     phieuNhap.TrangThai = EnumHelper.GetDisplayName(TrangThaiPhieuNhap.ChoNhapKho).Normalize(NormalizationForm.FormC);
 
 

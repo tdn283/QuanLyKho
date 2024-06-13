@@ -9,6 +9,7 @@ using QuanLyKho.ViewModels.DanhMucViewModels;
 using QuanLyKho.ViewModels.OtherViewModels;
 using QuanLyKho.ViewModels.PhieuNhapViewModels;
 using System.Net.WebSockets;
+using System.Text;
 
 namespace QuanLyKho.Controllers
 {

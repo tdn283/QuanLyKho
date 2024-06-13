@@ -17,6 +17,7 @@ namespace QuanLyKho.ViewModels.NhaCungCapViewModel
         public string? SoDienThoai { get; set; }
         [Display(Name = "Email")]
         [Required(ErrorMessage = "Email không được để trống")]
+        [RegularExpression(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$", ErrorMessage = "Địa chỉ email không hợp lệ")]
         public string? Email { get; set; }
     }
 }

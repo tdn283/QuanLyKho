@@ -19,7 +19,7 @@
                     <select name="danhMucFilter" class="form-select" asp-items="@ViewBag.DanhMucList" aria-label="Danh mục">
                         <option value="">Tất cả danh mục</option>
                     </select>
-                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i>Tìm kiếm</button>
                     <a asp-action="Index" class="btn btn-secondary">Reset</a>
                 </div>
             </form>
@@ -31,7 +31,7 @@
             }
         </div>
 
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped table-bordered">
             <thead>
                 <tr>
                     <th>ID</th>

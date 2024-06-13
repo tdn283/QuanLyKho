@@ -17,7 +17,7 @@
                     <a asp-action="Index" class="btn btn-secondary">Reset</a>
                 </div>
             </form>
-            @if (User.IsInRole("Quản lý"))
+            @if (User.IsInRole("Quản lý") || User.IsInRole("Nhân viên nhập"))
             {
             <a asp-action="Create" class="btn btn-outline-primary">
                 <i class="bi bi-plus"></i> Thêm nhà cung cấp
@@ -25,7 +25,7 @@
             }
         </div>
 
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped table-bordered">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -47,7 +47,7 @@
                         <td>@item.Email</td>
                         <td class="text-center">
                             <div class="btn-group" role="group" aria-label="Actions">
-                                @if (User.IsInRole("Quản lý"))
+                                @if (User.IsInRole("Quản lý") || User.IsInRole("Nhân viên nhập"))
                                 {
                                     <a type="button" class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.MaNhaCungCap">Edit</a>
                                     <a type="button" class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.MaNhaCungCap">Details</a>

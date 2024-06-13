@@ -8,7 +8,6 @@
 
 }
 <style>
-    /* Improved Card Styling */
     .card {
         border: none; /* Remove default border */
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
@@ -49,17 +48,35 @@
 </style>
 
 <div class="row">
-    <a asp-controller="NhanVien" asp-action="Index" class="col-md-4 mb-3 text-decoration-none">
-        <div class="card">
-            <div class="card-body">
-                <i class="bi bi-people card-icon text-primary"></i>
-                <div class="card-text-container">
-                    <p class="card-text">@Model.Item1</p>
-                    <h3 class="card-title">Tổng số nhân viên</h3>
+    @if (User.IsInRole("Quản lý"))
+    {
+        <a asp-controller="NhanVien" asp-action="Index" class="col-md-4 mb-3 text-decoration-none">
+            <div class="card">
+                <div class="card-body">
+                    <i class="bi bi-people card-icon text-primary"></i>
+                    <div class="card-text-container">
+                        <p class="card-text">@Model.Item1</p>
+                        <h3 class="card-title">Tổng số nhân viên</h3>
+                    </div>
+                </div>
+            </div>
+        </a>
+    }
+    else
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <i class="bi bi-people card-icon text-primary"></i>
+                    <div class="card-text-container">
+                        <p class="card-text">@Model.Item1</p>
+                        <h3 class="card-title">Tổng số nhân viên</h3>
+                    </div>
                 </div>
             </div>
         </div>
-    </a>
+    }
+
 
     <a asp-controller="ThietBi" asp-action="Index" class="col-md-4 mb-3 text-decoration-none">
         <div class="card">

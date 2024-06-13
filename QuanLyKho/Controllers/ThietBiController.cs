@@ -9,6 +9,7 @@ using QuanLyKho.Models;
 using QuanLyKho.ViewModels.OtherViewModels;
 using QuanLyKho.ViewModels.PhieuNhapViewModels;
 using QuanLyKho.ViewModels.ThietBiViewModels;
+using System.Text;
 
 namespace QuanLyKho.Controllers
 {

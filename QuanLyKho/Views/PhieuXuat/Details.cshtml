@@ -94,7 +94,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="Index" class="btn btn-secondary">Trở về</a>
+                            <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-chevron-left"></i> Trở về</a>
                             @if (User.IsInRole("Nhân viên xuất") || User.IsInRole("Quản lý"))
                             {
                                 @if (Model.SelectedTrangThai != "Đã duyệt" && Model.SelectedTrangThai != "Đã hủy")
@@ -104,7 +104,7 @@
                                     {
                                         <text> disabled </text>
                                     }>
-                                                    Lưu
+                                                            <i class="bi bi-floppy"></i> Lưu
                                     </button>
                                 }
                             }

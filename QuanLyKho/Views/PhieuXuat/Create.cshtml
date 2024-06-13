@@ -1,5 +1,27 @@
 ﻿@model QuanLyKho.ViewModels.PhieuXuatViewModels.PhieuXuatCreateViewModel
 
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    tbody {
+        display: block;
+        max-height: 350px;
+        overflow-y: auto;
+    }
+
+        thead, tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+    thead {
+        width: calc( 100% - 1em );
+    }
+</style>
+
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-10">
@@ -20,55 +42,57 @@
                         </div>
 
                         <h3 class="text-center mt-4 mb-3">Danh sách thiết bị</h3>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Tên thiết bị</th>
-                                    <th class="text-center">SL còn</th>
-                                    <th class="text-end">Giá bán</th>
-                                    <th class="text-center">SL xuất</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for (int i = 0; i < Model.ThongTinThietBis.Count; i++)
-                                {
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="thead-fixed">
                                     <tr>
-                                        <td class="align-middle">
-                                            @Html.HiddenFor(model => model.ThongTinThietBis[i].MaNhaCungCap)
-                                            @Html.HiddenFor(model => model.ThongTinThietBis[i].MaThietBi, new { @name = $"ThongTinThietBis[{i}].MaThietBi" })
-                                            @Html.DisplayFor(model => model.ThongTinThietBis[i].MaThietBi)
-                                        </td>
-                                        <td class="align-middle">
-                                            @Html.DisplayFor(model => model.ThongTinThietBis[i].TenThietBi)
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            @Html.DisplayFor(model => model.ThongTinThietBis[i].SoLuongCon)
-                                        </td>
-                                        <td class="align-middle text-end">
-                                            @Html.HiddenFor(model => model.ThongTinThietBis[i].GiaBan)
-                                            @(String.Format("{0:n0} VNĐ", Model.ThongTinThietBis[i].GiaBan))
-                                        </td>
-                                        <td class="align-middle input-group">
-                                            <button class="btn btn-outline-secondary" type="button" onclick="decrementValue(@i)">-</button>
-                                            @Html.EditorFor(model => model.ThongTinThietBis[i].SoLuongXuat, new { htmlAttributes = new { @class = "form-control soLuongXuat", @style = "width: 50px; text-align: center;", @min = "0", @name = $"ThongTinThietBis[{i}].SoLuongXuat" } })
-                                            <button class="btn btn-outline-secondary" type="button" onclick="incrementValue(@i)">+</button>
-                                            @Html.ValidationMessageFor(model => model.ThongTinThietBis[i].SoLuongXuat, "", new { @class = "text-danger" })
-                                        </td>
+                                        <th>ID</th>
+                                        <th>Tên thiết bị</th>
+                                        <th class="text-center">SL còn</th>
+                                        <th class="text-end">Giá bán</th>
+                                        <th class="text-center">SL xuất</th>
                                     </tr>
-                                }
-                                <tr>
-                                    <td colspan="3" class="text-start fw-bold">Tổng cộng:</td>
-                                    @Html.HiddenFor(model => model.TongTien, new { id = "tongTienHidden" })
-                                    <td id="tongTien" class="text-end fw-bold">@(String.Format("{0:n0} VNĐ", Model.TongTien))</td>
-                                    <td colspan="2"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
+                                </thead>
+                                <tbody style="max-height: 350px; overflow-y: auto;">
+                                    @for (int i = 0; i < Model.ThongTinThietBis.Count; i++)
+                                    {
+                                        <tr>
+                                            <td class="align-middle">
+                                                @Html.HiddenFor(model => model.ThongTinThietBis[i].MaNhaCungCap)
+                                                @Html.HiddenFor(model => model.ThongTinThietBis[i].MaThietBi, new { @name = $"ThongTinThietBis[{i}].MaThietBi" })
+                                                @Html.DisplayFor(model => model.ThongTinThietBis[i].MaThietBi)
+                                            </td>
+                                            <td class="align-middle">
+                                                @Html.DisplayFor(model => model.ThongTinThietBis[i].TenThietBi)
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                @Html.DisplayFor(model => model.ThongTinThietBis[i].SoLuongCon)
+                                            </td>
+                                            <td class="align-middle text-end">
+                                                @Html.HiddenFor(model => model.ThongTinThietBis[i].GiaBan)
+                                                @(String.Format("{0:n0} VNĐ", Model.ThongTinThietBis[i].GiaBan))
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="align-middle input-group">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="decrementValue(@i)">-</button>
+                                                    @Html.EditorFor(model => model.ThongTinThietBis[i].SoLuongXuat, new { htmlAttributes = new { @class = "form-control soLuongXuat", @style = "width: 50px; text-align: center;", @min = "0", @name = $"ThongTinThietBis[{i}].SoLuongXuat" } })
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="incrementValue(@i)">+</button>
+                                                    @Html.ValidationMessageFor(model => model.ThongTinThietBis[i].SoLuongXuat, "", new { @class = "text-danger" })
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-between mb-4">
+                                <span colspan="3" class="text-start fw-bold">Tổng cộng:</span>
+                                @Html.HiddenFor(model => model.TongTien, new { id = "tongTienHidden" })
+                                <span id="tongTien" class="text-end fw-bold">@(String.Format("{0:n0} VNĐ", Model.TongTien))</span>
+                        </div>
                         <div class="mb-3">
                             <label asp-for="GhiChu" class="form-label">Ghi chú:</label>
-                            <textarea asp-for="GhiChu" class="form-control" rows="3"></textarea>
+                            <textarea asp-for="GhiChu" class="form-control" placeholder="Ghi chú" rows="3"></textarea>
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">

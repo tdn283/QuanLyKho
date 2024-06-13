@@ -115,7 +115,7 @@ public partial class QuanlykhoContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("maDanhMuc");
             entity.Property(e => e.MoTa)
-                .HasColumnType("text")
+                //.HasColumnType("text")
                 .HasColumnName("moTa");
             entity.Property(e => e.TenDanhMuc)
                 .HasMaxLength(20)
@@ -162,7 +162,7 @@ public partial class QuanlykhoContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("maPhieuNhap");
             entity.Property(e => e.GhiChu)
-                .HasColumnType("text")
+                //.HasColumnType("text")
                 .HasColumnName("ghiChu");
             entity.Property(e => e.MaNguoiDung)
                 .HasMaxLength(5)
@@ -198,7 +198,7 @@ public partial class QuanlykhoContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("maPhieuXuat");
             entity.Property(e => e.GhiChu)
-                .HasColumnType("text")
+                //.HasColumnType("text")
                 .HasColumnName("ghiChu");
             entity.Property(e => e.MaNguoiDung)
                 .HasMaxLength(5)
@@ -297,7 +297,7 @@ public partial class QuanlykhoContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("maNhaCungCap");
             entity.Property(e => e.MoTa)
-                .HasColumnType("text")
+                //.HasColumnType("text")
                 .HasColumnName("moTa");
             entity.Property(e => e.Model)
                 .HasMaxLength(20)
@@ -344,7 +344,7 @@ public partial class QuanlykhoContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("maVaiTro");
             entity.Property(e => e.MoTa)
-                .HasColumnType("text")
+                //.HasColumnType("text")
                 .HasColumnName("moTa");
             entity.Property(e => e.TenVaiTro)
                 .HasMaxLength(20)

@@ -11,6 +11,7 @@ using QuanLyKho.Models;
 using QuanLyKho.ViewModels.OtherViewModels;
 using QuanLyKho.ViewModels.PhieuNhapViewModels;
 using QuanLyKho.ViewModels.PhieuXuatViewModels;
+using System.Globalization;
 using System.Text;
 
 namespace QuanLyKho.Controllers
@@ -26,7 +27,7 @@ namespace QuanLyKho.Controllers
             _phieuXuatService = phieuXuatService;
         }
 
-        public async Task<IActionResult> Index(string? searchString = null, string? trangThaiFilter = null, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string? searchString = null, string? trangThaiFilter = null, string? sortBy = null, int pageNumber = 1, int pageSize = 10)
         {
             var phieuXuatList = await _phieuXuatService.GetAllPhieuXuatAsync();
             var nguoiDungList = await _context.TaiKhoans.ToListAsync();
@@ -64,6 +65,16 @@ namespace QuanLyKho.Controllers
                     )
                     .ToList();
 
+            // Sort
+            phieuXuatVM = sortBy switch
+            {
+                "ngayXuat_asc" => phieuXuatVM.OrderBy(pn => DateTime.ParseExact(pn.NgayXuat, "dd-MM-yyyy", CultureInfo.InvariantCulture)).ToList(),
+                "ngayXuat_desc" => phieuXuatVM.OrderByDescending(pn => DateTime.ParseExact(pn.NgayXuat, "dd-MM-yyyy", CultureInfo.InvariantCulture)).ToList(),
+                "tongTien_asc" => phieuXuatVM.OrderBy(pn => pn.TongTien).ToList(),
+                "tongTien_desc" => phieuXuatVM.OrderByDescending(pn => pn.TongTien).ToList(),
+                _ => phieuXuatVM
+            };
+
             // Pagination
             int totalItems = phieuXuatVM.Count;
             var pagedPhieuXuatVM = phieuXuatVM.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
@@ -81,6 +92,7 @@ namespace QuanLyKho.Controllers
 
             ViewData["searchString"] = searchString; // Keep the search string after reloading the page
             ViewData["trangThaiFilter"] = trangThaiFilter; // Keep the filter after reloading the page
+            ViewData["sortBy"] = sortBy; // Keep the sort by after reloading the page
 
             return View(phieuXuatIndexVM);
         }
