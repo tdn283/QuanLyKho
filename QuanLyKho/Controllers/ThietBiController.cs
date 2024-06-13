@@ -23,9 +23,9 @@ namespace QuanLyKho.Controllers
             _context = context;
             _thietBiService = thietBiService;
         }
-        public async Task<IActionResult> Index(string searchString = null, string danhMucFilter = null, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string searchString = "", string danhMucFilter = null, int pageNumber = 1, int pageSize = 10)
         {
-            // Viewbag
+            // Populate ViewBag with DanhMuc options for filtering
             var danhMucList = _context.DanhMucThietBis.Select(dm => new SelectListItem
             {
                 Value = dm.MaDanhMuc,
@@ -34,12 +34,15 @@ namespace QuanLyKho.Controllers
             }).ToList();
             ViewBag.DanhMucList = danhMucList;
 
+            // Normalize search string to lowercase
             searchString = string.IsNullOrEmpty(searchString) ? "" : searchString.ToLower();
 
+            // Fetch all required data asynchronously
             var listThietBi = await _thietBiService.GetAllThietBiAsync();
             var listDanhMuc = await _context.DanhMucThietBis.ToListAsync();
             var listNhaCungCap = await _context.NhaCungCaps.ToListAsync();
 
+            // Map ThietBi entities to ThietBiViewModels with filtering
             var thietBiVM = listThietBi
                 .Select(tb =>
                 {
@@ -63,15 +66,16 @@ namespace QuanLyKho.Controllers
                     };
                 })
                 .Where(tb =>
-                    (string.IsNullOrEmpty(searchString) || tb.TenThietBi.ToLower().Contains(searchString)) && // Search by TenThietBi
+                    (string.IsNullOrEmpty(searchString) || tb.TenThietBi.ToLower().Contains(searchString)) && // Filter by TenThietBi
                     (danhMucFilter == null || tb.MaDanhMuc == danhMucFilter) // Filter by MaDanhMuc
-                    )
+                )
                 .ToList();
 
-            // Pagination
+            // Apply pagination
             int totalItems = thietBiVM.Count;
             var pagedThietBiVM = thietBiVM.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
+            // Create the view model for the Index view
             var thietBiIndexVM = new ThietBiIndexViewModel
             {
                 ThietBis = pagedThietBiVM,
@@ -83,24 +87,31 @@ namespace QuanLyKho.Controllers
                 }
             };
 
-            ViewData["searchString"] = searchString; // Keep the search string after reloading the page
-            ViewData["danhMucFilter"] = danhMucFilter; // Keep the filter after reloading the page
+            // Retain search string and filter value after the page reloads
+            ViewData["searchString"] = searchString;
+            ViewData["danhMucFilter"] = danhMucFilter;
 
+            // Return the Index view with the constructed view model
             return View(thietBiIndexVM);
         }
 
         // GET: ThietBi/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            // Fetch ThietBi entity by its ID asynchronously
             var thietBi = await _thietBiService.GetThietBiByIdAsync(id);
+
+            // Check if ThietBi is found
             if (thietBi == null)
             {
-                return NotFound();
+                return NotFound(); // Return 404 Not Found if ThietBi is not found
             }
 
+            // Fetch the related DanhMuc and NhaCungCap entities
             var danhMuc = await _context.DanhMucThietBis.FindAsync(thietBi.MaDanhMuc);
             var nhaCungCap = await _context.NhaCungCaps.FindAsync(thietBi.MaNhaCungCap);
 
+            // Map ThietBi entity properties to a ThietBiViewModel
             var thietBiVM = new ThietBiViewModel
             {
                 MaThietBi = thietBi.MaThietBi,
@@ -117,26 +128,27 @@ namespace QuanLyKho.Controllers
                 SoLuongCon = thietBi.SoLuongCon,
                 GiaBan = thietBi.GiaBan
             };
+
+            // Return the Details view with the constructed ThietBiViewModel
             return View(thietBiVM);
         }
+
 
         // GET: ThietBi/Create
         public async Task<IActionResult> Create()
         {
-            var danhMucList = _context.DanhMucThietBis.Select(dm => new
-            {
-                MaDm = dm.MaDanhMuc,
-                TenDm = dm.TenDanhMuc
-            }).ToList();
+            // Fetch data for danhMuc and nhaCungCap dropdowns
+            var danhMucList = _context.DanhMucThietBis
+                .Select(dm => new { MaDm = dm.MaDanhMuc, TenDm = dm.TenDanhMuc })
+                .ToList();
             ViewBag.DanhMucList = new SelectList(danhMucList, "MaDm", "TenDm");
 
-            var nhaCungCapList = _context.NhaCungCaps.Select(ncc => new
-            {
-                MaNcc = ncc.MaNhaCungCap,
-                TenNcc = ncc.TenNhaCungCap
-            }).ToList();
+            var nhaCungCapList = _context.NhaCungCaps
+                .Select(ncc => new { MaNcc = ncc.MaNhaCungCap, TenNcc = ncc.TenNhaCungCap })
+                .ToList();
             ViewBag.NhaCungCapList = new SelectList(nhaCungCapList, "MaNcc", "TenNcc");
 
+            // Return the view to create a new ThietBi
             return View();
         }
 
@@ -145,51 +157,59 @@ namespace QuanLyKho.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ThietBiCreateViewModel thietBiCreateVM)
         {
-            var danhMucList = _context.DanhMucThietBis.Select(dm => new
-            {
-                MaDm = dm.MaDanhMuc,
-                TenDm = dm.TenDanhMuc
-            }).ToList();
+            // Fetch data for danhMuc and nhaCungCap dropdowns
+            var danhMucList = _context.DanhMucThietBis
+                .Select(dm => new { MaDm = dm.MaDanhMuc, TenDm = dm.TenDanhMuc })
+                .ToList();
             ViewBag.DanhMucList = new SelectList(danhMucList, "MaDm", "TenDm");
 
-            var nhaCungCapList = _context.NhaCungCaps.Select(ncc => new
-            {
-                MaNcc = ncc.MaNhaCungCap,
-                TenNcc = ncc.TenNhaCungCap
-            }).ToList();
+            var nhaCungCapList = _context.NhaCungCaps
+                .Select(ncc => new { MaNcc = ncc.MaNhaCungCap, TenNcc = ncc.TenNhaCungCap })
+                .ToList();
             ViewBag.NhaCungCapList = new SelectList(nhaCungCapList, "MaNcc", "TenNcc");
 
+            // Check if the model is valid
             if (ModelState.IsValid)
             {
+                // Create a new ThongTinThietBi entity
                 var thietBi = new ThongTinThietBi
                 {
-                    MaThietBi = AutoIncrementHelper.TaoMaThietBiMoi(_context),
+                    MaThietBi = AutoIncrementHelper.TaoMaThietBiMoi(_context), // Generate a unique ID
                     TenThietBi = thietBiCreateVM.TenThietBi,
                     MaDanhMuc = thietBiCreateVM.MaDanhMuc,
                     MaNhaCungCap = thietBiCreateVM.MaNhaCungCap,
                     ThoiGianBaoHanh = thietBiCreateVM.ThoiGianBaoHanh.ToString(),
                     Model = thietBiCreateVM.Model,
                     NhaSanXuat = thietBiCreateVM.NhaSanXuat,
-                    MoTa = thietBiCreateVM.MoTa != null ? thietBiCreateVM.MoTa : "",
+                    MoTa = thietBiCreateVM.MoTa ?? "",
                     TrangThai = EnumHelper.GetDisplayName(TrangThaiThietBiEnum.HetHang),
                     SoLuongCon = 0,
                     GiaBan = thietBiCreateVM.GiaBan != null ? (decimal)thietBiCreateVM.GiaBan : 0
                 };
+
+                // Add the new ThietBi to the database
                 await _thietBiService.AddThietBiAsync(thietBi);
+
+                // Redirect to Index after successful creation
                 return RedirectToAction(nameof(Index));
             }
+
+            // Return the view with the model to display any validation errors
             return View(thietBiCreateVM);
         }
+
 
         // GET: ThietBi/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
+            // Fetch ThietBi entity by ID
             var thietBi = await _thietBiService.GetThietBiByIdAsync(id);
             if (thietBi == null)
             {
-                return NotFound();
+                return NotFound(); // Return 404 if ThietBi not found
             }
 
+            // Prepare data for DanhMuc dropdown list
             var danhMucList = _context.DanhMucThietBis.Select(dm => new
             {
                 MaDm = dm.MaDanhMuc,
@@ -197,6 +217,7 @@ namespace QuanLyKho.Controllers
             }).ToList();
             ViewBag.DanhMucList = new SelectList(danhMucList, "MaDm", "TenDm");
 
+            // Prepare data for NhaCungCap dropdown list
             var nhaCungCapList = _context.NhaCungCaps.Select(ncc => new
             {
                 MaNcc = ncc.MaNhaCungCap,
@@ -204,13 +225,14 @@ namespace QuanLyKho.Controllers
             }).ToList();
             ViewBag.NhaCungCapList = new SelectList(nhaCungCapList, "MaNcc", "TenNcc");
 
+            // Map ThietBi entity to ThietBiEditViewModel
             var thietBiEditVM = new ThietBiEditViewModel
             {
                 MaThietBi = thietBi.MaThietBi,
                 TenThietBi = thietBi.TenThietBi,
                 MaDanhMuc = thietBi.MaDanhMuc,
                 MaNhaCungCap = thietBi.MaNhaCungCap,
-                ThoiGianBaoHanh = int.TryParse(thietBi.ThoiGianBaoHanh, out int thoiGianBaoHanh) ? thoiGianBaoHanh : 0,
+                ThoiGianBaoHanh = int.TryParse(thietBi.ThoiGianBaoHanh, out int thoiGianBaoHanh) ? thoiGianBaoHanh : 0, // Handle potential parsing errors
                 Model = thietBi.Model,
                 NhaSanXuat = thietBi.NhaSanXuat,
                 MoTa = thietBi.MoTa,
@@ -218,6 +240,8 @@ namespace QuanLyKho.Controllers
                 SoLuongCon = thietBi.SoLuongCon,
                 GiaBan = thietBi.GiaBan
             };
+
+            // Return the Edit view with the mapped view model
             return View(thietBiEditVM);
         }
 
@@ -226,27 +250,27 @@ namespace QuanLyKho.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, ThietBiEditViewModel thietBiEditVM)
         {
-            var danhMucList = _context.DanhMucThietBis.Select(dm => new
-            {
-                MaDm = dm.MaDanhMuc,
-                TenDm = dm.TenDanhMuc
-            }).ToList();
+            // Fetch data for danhMuc and nhaCungCap dropdowns
+            var danhMucList = _context.DanhMucThietBis
+                .Select(dm => new { MaDm = dm.MaDanhMuc, TenDm = dm.TenDanhMuc })
+                .ToList();
             ViewBag.DanhMucList = new SelectList(danhMucList, "MaDm", "TenDm");
 
-            var nhaCungCapList = _context.NhaCungCaps.Select(ncc => new
-            {
-                MaNcc = ncc.MaNhaCungCap,
-                TenNcc = ncc.TenNhaCungCap
-            }).ToList();
+            var nhaCungCapList = _context.NhaCungCaps
+                .Select(ncc => new { MaNcc = ncc.MaNhaCungCap, TenNcc = ncc.TenNhaCungCap })
+                .ToList();
             ViewBag.NhaCungCapList = new SelectList(nhaCungCapList, "MaNcc", "TenNcc");
 
+            // Check if IDs match
             if (id != thietBiEditVM.MaThietBi)
             {
                 return NotFound();
             }
 
+            // Validate model state
             if (ModelState.IsValid)
             {
+                // Map updated view model back to a ThietBi entity
                 var thietBi = new ThongTinThietBi
                 {
                     MaThietBi = thietBiEditVM.MaThietBi,
@@ -256,28 +280,43 @@ namespace QuanLyKho.Controllers
                     ThoiGianBaoHanh = thietBiEditVM.ThoiGianBaoHanh.ToString(),
                     Model = thietBiEditVM.Model,
                     NhaSanXuat = thietBiEditVM.NhaSanXuat,
-                    MoTa = thietBiEditVM.MoTa != null ? thietBiEditVM.MoTa : "",
-                    TrangThai = thietBiEditVM.SoLuongCon == 0 ? EnumHelper.GetDisplayName(TrangThaiThietBiEnum.HetHang) : EnumHelper.GetDisplayName(TrangThaiThietBiEnum.ConHang),
+                    MoTa = thietBiEditVM.MoTa ?? "",
+                    // Update TrangThai based on SoLuongCon
+                    TrangThai = thietBiEditVM.SoLuongCon == 0
+                        ? EnumHelper.GetDisplayName(TrangThaiThietBiEnum.HetHang)
+                        : EnumHelper.GetDisplayName(TrangThaiThietBiEnum.ConHang),
                     SoLuongCon = thietBiEditVM.SoLuongCon,
                     GiaBan = thietBiEditVM.GiaBan
                 };
+
+                // Update the ThietBi in the database
                 await _thietBiService.UpdateThietBiAsync(id, thietBi);
+
+                // Redirect to Index on success
                 return RedirectToAction(nameof(Index));
             }
+
+            // If model state is invalid, return the view with the model
             return View(thietBiEditVM);
         }
+
 
         // GET: ThietBi/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
+            // Fetch ThietBi entity by ID
             var thietBi = await _thietBiService.GetThietBiByIdAsync(id);
             if (thietBi == null)
             {
-                return NotFound();
+                return NotFound(); // Return 404 if ThietBi not found
             }
 
+            // Delete the ThietBi
             await _thietBiService.DeleteThietBiAsync(id);
+
+            // Redirect to Index on success
             return RedirectToAction(nameof(Index));
         }
+
     }
 }
