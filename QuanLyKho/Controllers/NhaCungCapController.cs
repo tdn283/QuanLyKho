@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QuanLyKho.Data.Interface;
 using QuanLyKho.Helper;
 using QuanLyKho.Models;
@@ -20,12 +21,16 @@ namespace QuanLyKho.Controllers
             _context = context;
         }
 
+        // GET: NhaCungCap/Index
         public async Task<IActionResult> Index(string searchString = "", int pageNumber = 1, int pageSize = 10)
         {
+            // Normalize search string (convert to lowercase for case-insensitive search)
             searchString = string.IsNullOrEmpty(searchString) ? "" : searchString.ToLower();
 
+            // Fetch the list of NhaCungCaps asynchronously
             var listNhaCungCap = await _nhaCungCapService.GetAllNhaCungCapAsync();
 
+            // Map NhaCungCap entities into NhaCungCapViewModels with optional filtering
             var nhaCungCapVM = listNhaCungCap
                 .Select(ncc => new NhaCungCapViewModel
                 {
@@ -35,15 +40,20 @@ namespace QuanLyKho.Controllers
                     SoDienThoai = ncc.SoDienThoai,
                     Email = ncc.Email
                 })
-                .Where(ncc =>
-                    string.IsNullOrEmpty(searchString) || ncc.TenNhaCungCap.ToLower().Contains(searchString) // Search by TenNhaCungCap
-                    )
+                .Where(ncc => string.IsNullOrEmpty(searchString) ||
+                              ncc.TenNhaCungCap.ToLower().Contains(searchString))
                 .ToList();
 
-            // Pagination
+            // Get total count of items before pagination
             int totalItems = nhaCungCapVM.Count;
-            var pagedNhaCungCapVM = nhaCungCapVM.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
+            // Apply pagination to the query (get items for current page)
+            var pagedNhaCungCapVM = nhaCungCapVM
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Construct the view model for the Index view
             var nhaCungCapIndexVM = new NhaCungCapIndexViewModel
             {
                 NhaCungCaps = pagedNhaCungCapVM,
@@ -55,20 +65,26 @@ namespace QuanLyKho.Controllers
                 }
             };
 
+            // Store search string in ViewData to retain value in the view
             ViewData["searchString"] = searchString;
 
+            // Return the Index view with the constructed view model
             return View(nhaCungCapIndexVM);
         }
 
         // GET: NhaCungCap/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            // Fetch NhaCungCap by its ID asynchronously
             var nhaCungCap = await _nhaCungCapService.GetNhaCungCapByIdAsync(id);
+
+            // Check if NhaCungCap is found
             if (nhaCungCap == null)
             {
-                return NotFound();
+                return NotFound(); // Return 404 Not Found if NhaCungCap not found
             }
 
+            // Map NhaCungCap properties to a NhaCungCapViewModel
             var nhaCungCapVM = new NhaCungCapViewModel
             {
                 MaNhaCungCap = nhaCungCap.MaNhaCungCap,
@@ -78,8 +94,10 @@ namespace QuanLyKho.Controllers
                 Email = nhaCungCap.Email
             };
 
+            // Return the Details view with the mapped NhaCungCapViewModel
             return View(nhaCungCapVM);
         }
+
 
         // GET: NhaCungCap/Create
         public IActionResult Create()
@@ -92,33 +110,44 @@ namespace QuanLyKho.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(NhaCungCapViewModel nhaCungCapVM)
         {
+            // Check if the model state is valid
             if (ModelState.IsValid)
             {
+                // Create a new NhaCungCap entity from the ViewModel
                 var nhaCungCap = new NhaCungCap
                 {
-                    MaNhaCungCap= AutoIncrementHelper.TaoMaNhaCungCapMoi(_context),
+                    MaNhaCungCap = AutoIncrementHelper.TaoMaNhaCungCapMoi(_context), // Generate a new unique MaNhaCungCap
                     TenNhaCungCap = nhaCungCapVM.TenNhaCungCap,
                     DiaChi = nhaCungCapVM.DiaChi,
                     SoDienThoai = nhaCungCapVM.SoDienThoai,
                     Email = nhaCungCapVM.Email
                 };
 
+                // Add the new NhaCungCap to the database asynchronously
                 await _nhaCungCapService.AddNhaCungCapAsync(nhaCungCap);
 
+                // Redirect to the Index action after successful creation
                 return RedirectToAction(nameof(Index));
             }
+
+            // If model state is invalid (validation errors), return the view with the model data to display errors
             return View(nhaCungCapVM);
         }
+
 
         // GET: NhaCungCap/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
+            // Fetch NhaCungCap by its ID asynchronously
             var nhaCungCap = await _nhaCungCapService.GetNhaCungCapByIdAsync(id);
+
+            // Check if NhaCungCap is found
             if (nhaCungCap == null)
             {
-                return NotFound();
+                return NotFound(); // Return 404 Not Found if NhaCungCap is not found
             }
 
+            // Map NhaCungCap properties to a NhaCungCapViewModel for editing
             var nhaCungCapVM = new NhaCungCapViewModel
             {
                 MaNhaCungCap = nhaCungCap.MaNhaCungCap,
@@ -128,6 +157,7 @@ namespace QuanLyKho.Controllers
                 Email = nhaCungCap.Email
             };
 
+            // Return the Edit view with the mapped NhaCungCapViewModel
             return View(nhaCungCapVM);
         }
 
@@ -136,8 +166,10 @@ namespace QuanLyKho.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, NhaCungCapViewModel nhaCungCapVM)
         {
+            // Check if the model state is valid 
             if (ModelState.IsValid)
             {
+                // Create an updated NhaCungCap entity from the ViewModel
                 var nhaCungCap = new NhaCungCap
                 {
                     MaNhaCungCap = id,
@@ -147,32 +179,45 @@ namespace QuanLyKho.Controllers
                     Email = nhaCungCapVM.Email
                 };
 
+                // Update the NhaCungCap in the database asynchronously
                 await _nhaCungCapService.UpdateNhaCungCapAsync(id, nhaCungCap);
 
+                // Redirect to the Index action after successful update
                 return RedirectToAction(nameof(Index));
             }
+
+            // If model state is invalid (validation errors), return the view with the model data to display errors
             return View(nhaCungCapVM);
         }
+
 
         // GET: NhaCungCap/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
+            // Fetch NhaCungCap by its ID asynchronously
             var nhaCungCap = await _nhaCungCapService.GetNhaCungCapByIdAsync(id);
+
+            // Check if NhaCungCap exists
             if (nhaCungCap == null)
             {
-                return NotFound();
+                return NotFound(); // Return 404 Not Found if NhaCungCap is not found
             }
 
-            // Get list of ThietBi with MaDanhMuc = id then set maDanhMuc = null
-            var thietBiList = _context.ThongTinThietBis.Where(tb => tb.MaNhaCungCap == id).ToList();
-            foreach (var thietBi in thietBiList)
+            if (await _context.ThongTinThietBis.AnyAsync(tb => tb.MaNhaCungCap == id))
             {
-                thietBi.MaNhaCungCap = null;
+                // Set a error message to TempData
+                TempData["ErrorDeleteNhaCungCapMessage"] = "Không thể xóa nhà cung cấp.";
+                return RedirectToAction(nameof(Index)); // Or return an error view
             }
-            await _context.SaveChangesAsync();
 
+            await _context.SaveChangesAsync(); // Save changes to disassociate ThietBis
+
+            // Delete the NhaCungCap asynchronously
             await _nhaCungCapService.DeleteNhaCungCapAsync(id);
+
+            // Redirect to the Index action after successful deletion
             return RedirectToAction(nameof(Index));
         }
+
     }
 }

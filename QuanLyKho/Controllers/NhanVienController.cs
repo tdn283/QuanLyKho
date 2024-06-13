@@ -7,6 +7,7 @@ using QuanLyKho.Helper;
 using QuanLyKho.Models;
 using QuanLyKho.ViewModels.NhanVienViewModels;
 using QuanLyKho.ViewModels.OtherViewModels;
+using System.Security.Claims;
 
 namespace QuanLyKho.Controllers
 {

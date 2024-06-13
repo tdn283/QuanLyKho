@@ -16,10 +16,8 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <form asp-action="Index" class="me-4" style="width: 60%;">
                 <div class="input-group">
-                    <select name="danhMucFilter" class="form-select" asp-items="@ViewBag.DanhMucList" aria-label="Danh mục">
-                        <option value="">Tất cả danh mục</option>
-                    </select>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i>Tìm kiếm</button>
+                    <input name="searchString" class="form-control" placeholder="Tên danh mục" value="@ViewData["searchString"]" />
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Tìm kiếm</button>
                     <a asp-action="Index" class="btn btn-secondary">Reset</a>
                 </div>
             </form>
@@ -93,3 +91,28 @@
         </div>
     </div>
 </div>
+
+<div class="toast-container position-fixed end-0 p-3" style="top: 77px">
+    @if (TempData["ErrorDeleteDanhMucMessage"] != null)
+    {
+        <div id="errorDeleteDanhMucToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="1000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @TempData["ErrorDeleteDanhMucMessage"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var errorToast = document.getElementById('errorDeleteDanhMucToast');
+        if (errorToast) {
+            // duration: 1s
+            var toast = new bootstrap.Toast(errorToast, { delay: 1000 });
+            toast.show();
+        }
+    });
+</script>
